@@ -5,6 +5,7 @@ import com.smartParking.model.User;
 import com.smartParking.service.UserService;
 import com.smartParking.tokenization.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ public class UserServiceImpl implements UserService {
         });
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userDAO.createUser(user);
         return new Object[] {user, jwtUtils.generateToken(user.getEmail())};
     }
 
@@ -46,6 +48,7 @@ public class UserServiceImpl implements UserService {
         }
         return new Object[] {user, jwtUtils.generateToken(email)};
     }
+
 
     @Override
     public User getUserById(int userId) {
@@ -64,6 +67,12 @@ public class UserServiceImpl implements UserService {
             throw new IllegalStateException("Invalid role: " + newRole);
         }
         return userDAO.updateUserRole(userId, newRole);
+    }
+
+    @Override
+    public void signOut() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        SecurityContextHolder.clearContext();
     }
 }
 

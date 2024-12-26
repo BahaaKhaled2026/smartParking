@@ -9,4 +9,6 @@ public interface UserService {
     User getUserById(int userId); // Retrieve user details
     List<User> getAllUsers(); // Admin-only: Retrieve all users
     boolean updateUserRole(int userId, String newRole); // Admin-only: Update user roles
+
+    public void signOut(); // Sign out a user
 }

@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 
-export function DashboardSidebar({ className }) {
+export function DashboardSidebar({ className, handleLogout }) {
   return (
     <div
       className={`bg-black flex flex-col items-center md:items-start text-white pb-12 min-h-screen ${className} w-20 md:w-60`} // Set width to w-20 on smaller screens and w-60 on medium and up
@@ -49,6 +49,15 @@ export function DashboardSidebar({ className }) {
           <button className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
             <i class="fa-solid fa-envelope"></i>
             <span className="hidden md:block">Notifications</span>
+          </button>
+
+          {/*logout Button */}
+          <button 
+            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left"
+            onClick={handleLogout}
+          >
+            <i class="fa-solid fa-sign-out"></i>
+            <span className="hidden md:block">Logout</span>
           </button>
         </nav>
       </div>

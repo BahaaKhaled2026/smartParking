@@ -38,6 +38,12 @@ public class UserController {
         }
     }
 
+    @PostMapping("signout")
+    public ResponseEntity<?> signout() {
+        userService.signOut();
+        return ResponseEntity.ok(Map.of("message", "Signed out successfully"));
+    }
+
 
     @GetMapping("/admin/all")
     public ResponseEntity<List<User>> getAllUsers() {

@@ -89,27 +89,6 @@ button:focus-visible {
   gap: 0.5rem;
 }
 
-.login-btn-header,
-.signup-btn-header {
-  background-color: #D8D8D8;
-  width: 80px;
-  height: 38px;
-  gap: 0px;
-  border-radius: 10px;
-  opacity: 0px;
-  font-size: 16px;
-  font-weight: 600;
-  transition: all 200ms ease-in 100ms;
-}
-
-.login-btn-header:hover,
-.signup-btn-header:hover,
-.google-btn:hover,
-.facebook-btn:hover {
-  background-color: rgb(43, 42, 42);
-  color: white;
-}
-
 .header {
   background: rgb(43, 42, 42);
   box-shadow: 0vh 1.859375vh 4.375vh 0.4375vh rgba(14, 16, 19, 0.11);

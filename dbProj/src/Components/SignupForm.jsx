@@ -135,11 +135,11 @@ const SignupForm = () => {
             </div>
             }
             <div className="flex flex-col gap-5 w-full">
-                <div className="flex items-center justify-between">
+                <div className="login-form flex items-center justify-between">
                     <div>
-                        <h3 className="emailLabel mb-2">
+                        <label className="emailLabel mb-2">
                             First Name
-                        </h3>
+                        </label>
                         <input
                             placeholder="Enter first name"
                             type = "text"
@@ -148,11 +148,10 @@ const SignupForm = () => {
                             name = "firstName"
                             className = { `email-input text-gray-500 w-full border-2 rounded-lg h-8 text-sm p-2 ${ errors.firstName ? "border-red-500" : "" }` }
                         />
-                    </div>
-                    <div>
-                        <h3 className = "emailLabel mb-2">
+                    
+                        <label className = "emailLabel mb-2">
                             Last Name
-                        </h3>
+                        </label>
                         <input 
                             placeholder = "Enter last name"
                             type = "text"
@@ -168,7 +167,7 @@ const SignupForm = () => {
                         Gender
                     </h3>
                     <select
-                        className="email-input text-gray-400 w-full border-2 border-gray-300 rounded-lg"
+                        className="email-input text-gray-500 w-full border-2 border-gray-300 rounded-lg"
                         onChange = { handleChange }
                         value={formData.gender}
                         name="gender"
