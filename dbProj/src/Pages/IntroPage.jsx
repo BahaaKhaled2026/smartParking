@@ -17,7 +17,7 @@ function IntroPage() {
                     className="signup-btn-intro"
                     onClick={() => navigate('/signup')}
                 >
-                    New to Voterra
+                    New to our Platform?
                 </button>
                 <br />
                 <button

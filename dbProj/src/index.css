@@ -90,8 +90,8 @@ button:focus-visible {
 
 .signup-btn-intro,
 .login-btn-intro {
-  width: 343px;
-  height: 60px;
+  width: 360px;
+  height: 80px;
   padding: 8px 79px 11px 78px;
   gap: 0px;
   border-radius: 10px;
