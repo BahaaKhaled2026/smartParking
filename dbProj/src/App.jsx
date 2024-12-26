@@ -7,6 +7,7 @@ import useAuth from './hooks/useAuth';
 import MapWithUserLocation from './Map'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { DashboardSidebar } from './Components/DashboardSidebar'
+import Intro from './Pages/IntroPage';
 import Login from './Pages/Login';
 import SignUp from './Pages/SignUp';
 import Dashboard from './Pages/Dashboard';
@@ -20,7 +21,7 @@ function App() {
       <Router>
         <Suspense>
           <Routes>
-            {/* <Route path="/" element={<Intro />} /> */}
+            <Route path="/" element={<Intro />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/resetpassword" element={<ResetPasswordPage />} />
