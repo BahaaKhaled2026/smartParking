@@ -57,7 +57,7 @@ public class ParkingSpotDAOImpl implements ParkingSpotDAO {
     @Override
     @Transactional
     public boolean updateParkingSpot(ParkingSpot parkingSpot) {
-        String sql = "UPDATE parking_spots SET spot_number = ?, type = ?, status = ? WHERE spot_id = ?";
+        String sql = "UPDATE parking_spots SET spot_number = ?, type = ?, status = ? WHERE spot_id = ? FOR UPDATE";
         return jdbcTemplate.update(sql, parkingSpot.getSpotNumber(), parkingSpot.getType(),
                 parkingSpot.getStatus(), parkingSpot.getSpotId()) > 0;
     }
@@ -69,35 +69,6 @@ public class ParkingSpotDAOImpl implements ParkingSpotDAO {
         return jdbcTemplate.update(sql, spotId) > 0;
     }
 
-    @Transactional
-    public boolean reserveSpot(int spotId) {
-        // Step 1: Lock the parking spot for update
-        String lockSpotSql = "SELECT status FROM parking_spots WHERE spot_id = ? FOR UPDATE";
-        String status = jdbcTemplate.queryForObject(lockSpotSql, String.class, spotId);
-
-        if (!"AVAILABLE".equals(status)) {
-            throw new IllegalStateException("Parking spot is not available for reservation.");
-        }
-
-        // Step 2: Reserve the spot
-        String reserveSpotSql = "UPDATE parking_spots SET status = 'RESERVED' WHERE spot_id = ?";
-        return jdbcTemplate.update(reserveSpotSql, spotId) > 0;
-    }
-
-    @Transactional
-    public boolean releaseSpot(int spotId) {
-        // Step 1: Lock the parking spot for update
-        String lockSpotSql = "SELECT status FROM parking_spots WHERE spot_id = ? FOR UPDATE";
-        String status = jdbcTemplate.queryForObject(lockSpotSql, String.class, spotId);
-
-        if (!"RESERVED".equals(status)) {
-            throw new IllegalStateException("Parking spot is not reserved, so it cannot be released.");
-        }
-
-        // Step 2: Release the spot
-        String releaseSpotSql = "UPDATE parking_spots SET status = 'AVAILABLE' WHERE spot_id = ?";
-        return jdbcTemplate.update(releaseSpotSql, spotId) > 0;
-    }
 
     @Override
     public List<ParkingSpot> findAvailableSpotsByLocation(String location) {
@@ -110,4 +81,9 @@ public class ParkingSpotDAOImpl implements ParkingSpotDAO {
         return jdbcTemplate.query(sql, parkingSpotRowMapper, location);
     }
 
+    @Override
+    public int getLotIdBySpotId(int spotId) {
+        String sql = "SELECT lot_id FROM parking_spots WHERE spot_id = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, spotId);
+    }
 }

@@ -44,18 +44,9 @@ public class ReservationDAOImpl implements ReservationDAO {
     @Transactional
     public int createReservation(Reservation reservation) {
         // Step 1: Lock the parking spot for update
-        String lockSpotSql = "SELECT status FROM parking_spots WHERE spot_id = ? FOR UPDATE";
-        String status = jdbcTemplate.queryForObject(lockSpotSql, String.class, reservation.getSpotId());
+       // String lockSpotSql = "SELECT status FROM parking_spots WHERE spot_id = ? FOR UPDATE";
+       // String status = jdbcTemplate.queryForObject(lockSpotSql, String.class, reservation.getSpotId());
 
-        if (!"AVAILABLE".equals(status)) {
-            throw new IllegalStateException("Parking spot is not available for reservation.");
-        }
-
-        // Step 2: Mark the parking spot as RESERVED
-        String updateSpotSql = "UPDATE parking_spots SET status = 'RESERVED' WHERE spot_id = ?";
-        jdbcTemplate.update(updateSpotSql, reservation.getSpotId());
-
-        // Step 3: Insert the reservation
         String reservationSql = "INSERT INTO reservations (user_id, spot_id, start_time, end_time, status, penalty, cost) VALUES (?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -128,10 +119,12 @@ public class ReservationDAOImpl implements ReservationDAO {
     public boolean isSpotAvailableForDuration(int spotId, LocalDateTime startTime, LocalDateTime endTime) {
         String sql = "SELECT COUNT(*) FROM reservations " +
                 "WHERE spot_id = ? AND " +
-                "(start_time < ? AND end_time > ?)";
+                "(start_time < ? AND end_time > ?) AND " +
+                "status IN ('ACTIVE', 'OVER_STAY')";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, spotId, endTime, startTime);
         return count == 0;
     }
+
 
     @Override
     public List<Reservation> getExpiredReservations(LocalDateTime currentTime) {
@@ -159,4 +152,12 @@ public class ReservationDAOImpl implements ReservationDAO {
         return jdbcTemplate.query(sql, reservationRowMapper, status);
     }
 
+    @Override
+    public List<Reservation> getStartedReservations(LocalDateTime currentTime) {
+        String sql = """
+        SELECT * FROM reservations
+        WHERE start_time < ? AND status = 'ACTIVE'
+    """;
+        return jdbcTemplate.query(sql, reservationRowMapper, currentTime);
+    }
 }

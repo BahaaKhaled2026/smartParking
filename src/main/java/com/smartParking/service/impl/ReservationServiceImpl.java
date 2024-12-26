@@ -35,6 +35,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     private static final BigDecimal PENALTY_RATE = BigDecimal.valueOf(0.50);
     private static final long MAX_RESERVATION_HOURS = 24;
+    private static final long MIN_RESERVATION_HOURS = 1;
 
 
     @Override
@@ -46,28 +47,25 @@ public class ReservationServiceImpl implements ReservationService {
         if(!user.getRole().equals("DRIVER")) {
             throw new IllegalStateException("Only Drivers can make reservations.");
         }
-        ParkingSpot spot = parkingSpotDAO.getParkingSpotById(reservation.getSpotId())
-                .orElseThrow(() -> new IllegalStateException("Parking spot not found"));
-
-        if (!"AVAILABLE".equals(spot.getStatus())) {
-            throw new IllegalStateException("Parking spot is not available");
-        }
 
         long hours = Duration.between(reservation.getStartTime(), reservation.getEndTime()).toHours();
         if (hours > MAX_RESERVATION_HOURS) {
             throw new IllegalStateException("Reservations cannot exceed 24 hours.");
         }
 
+        if (hours < MIN_RESERVATION_HOURS) {
+            throw new IllegalStateException("Reservations must be at least 1 hour.");
+        }
+
         if (!reservationDAO.isSpotAvailableForDuration(reservation.getSpotId(),
                 reservation.getStartTime(), reservation.getEndTime())) {
             throw new IllegalStateException("Spot is not available for the selected duration.");
         }
-        reservation.setCost(calculateReservationCost(reservation.getStartTime(), reservation.getEndTime()));
-        int reservationId = reservationDAO.createReservation(reservation);
-        spot.setStatus("RESERVED");
-        parkingSpotDAO.updateParkingSpot(spot);
-
-        return reservationId;
+        int lotId = parkingSpotDAO.getParkingSpotById(reservation.getSpotId())
+                .orElseThrow(() -> new IllegalStateException("Parking spot not found"))
+                .getLotId();
+        reservation.setCost(calculateReservationCost(reservation.getStartTime(), reservation.getEndTime() , lotId));
+        return reservationDAO.createReservation(reservation);
     }
 
     @Override
@@ -105,15 +103,36 @@ public class ReservationServiceImpl implements ReservationService {
                 Duration overstay = Duration.between(reservation.getEndTime(), now);
                 BigDecimal penalty = BigDecimal.valueOf(overstay.toMinutes()).multiply(BigDecimal.valueOf(0.50));
                 reservation.setPenalty(penalty);
+                reservationDAO.updateReservation(reservation);
+                notificationService.notifyPenalty(reservation.getReservationId(), "You have been charged a penalty of $" + penalty + " for overstaying your reservation.");
             }
         }
     }
 
-    public BigDecimal calculateReservationCost(LocalDateTime startTime, LocalDateTime endTime) {
-
-        Duration duration = Duration.between(startTime, endTime);
-         return BigDecimal.valueOf(duration.toMinutes()).divide(BigDecimal.valueOf(60), 2, BigDecimal.ROUND_HALF_UP)
-                .multiply(BigDecimal.valueOf(5.00));
+    public BigDecimal calculateReservationCost(LocalDateTime startTime, LocalDateTime endTime , int lotId) {
+        int startHour = startTime.getHour();
+        int endHour = endTime.getHour();
+        // calculate different cost based on the time of the day
+        BigDecimal cost = BigDecimal.ZERO;
+        if (startHour >= 12 && startHour < 18 && endHour >= 12 && endHour < 18) {
+            cost = BigDecimal.valueOf(Duration.between(startTime, endTime).toMinutes()).divide(BigDecimal.valueOf(60), 2, BigDecimal.ROUND_HALF_UP)
+                    .multiply(BigDecimal.valueOf(5.00));
+        } else {
+            cost = BigDecimal.valueOf(Duration.between(startTime, endTime).toMinutes()).divide(BigDecimal.valueOf(60), 2, BigDecimal.ROUND_HALF_UP)
+                    .multiply(BigDecimal.valueOf(3.00));
+        }
+        List<ParkingSpot> spots = parkingSpotDAO.getParkingSpotsByLotId(lotId);
+        int availableSpots = 0;
+        for (ParkingSpot spot : spots) {
+            if (spot.getStatus().equals("AVAILABLE")) {
+                availableSpots++;
+            }
+        }
+        double percentage = (double) availableSpots / spots.size();
+        if (percentage < 0.1) {
+            cost = cost.multiply(BigDecimal.valueOf(1.5));
+        }
+        return cost;
     }
 
     @Override
@@ -123,8 +142,8 @@ public class ReservationServiceImpl implements ReservationService {
 
         activeReservations.forEach(reservation -> {
             if (reservation.getEndTime().isBefore(now)) {
-                BigDecimal updatedPenalty = reservation.getPenalty().add(PENALTY_RATE.multiply(BigDecimal.valueOf(20)));
-                reservation.setPenalty(updatedPenalty);
+                BigDecimal penalty = PENALTY_RATE.multiply(BigDecimal.valueOf(20));
+                reservation.setPenalty(penalty);
                 reservation.setStatus("NO_SHOW");
                 reservationDAO.updateReservation(reservation);
 
@@ -141,11 +160,7 @@ public class ReservationServiceImpl implements ReservationService {
                 user.setTotalPenalty(user.getTotalPenalty().add(PENALTY_RATE.multiply(BigDecimal.valueOf(10))));
                 userDAO.updateUser(user);
 
-                // Notify the frontend about the penalty
-                notificationService.notify(
-                        "/topic/penalties",
-                        reservation.getReservationId()
-                );
+                notificationService.notifyPenalty(reservation.getReservationId(), "You have been charged a penalty of $" + penalty + " for not showing up to your reservation.");
             }
         });
     }
@@ -188,5 +203,41 @@ public class ReservationServiceImpl implements ReservationService {
 
         reservation.setStatus("COMPLETED");
         reservationDAO.updateReservation(reservation);
+    }
+
+    @Override
+    public void startReservations() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Reservation> activeReservations = reservationDAO.getStartedReservations(now);
+
+        for (Reservation reservation : activeReservations) {
+            ParkingSpot spot = parkingSpotDAO.getParkingSpotById(reservation.getSpotId())
+                    .orElseThrow(() -> new IllegalStateException("Parking spot not found"));
+            spot.setStatus("RESERVED");
+            parkingSpotDAO.updateParkingSpot(spot);
+        }
+    }
+
+    @Override
+    public void arriveAtSpot(int reservationId) {
+        Reservation reservation = reservationDAO.getReservationById(reservationId)
+                .orElseThrow(() -> new IllegalStateException("Reservation not found"));
+
+        ParkingSpot spot = parkingSpotDAO.getParkingSpotById(reservation.getSpotId())
+                .orElseThrow(() -> new IllegalStateException("Parking spot not found"));
+        spot.setStatus("OCCUPIED");
+        parkingSpotDAO.updateParkingSpot(spot);
+    }
+
+    @Override
+    public void tenMinuteLeftNotification() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Reservation> activeReservations = reservationDAO.getReservationsByStatus("ACTIVE");
+
+        for (Reservation reservation : activeReservations) {
+            if (Duration.between(now, reservation.getEndTime()).toMinutes() == 10) {
+                notificationService.notifyTenMinuteLeft(reservation.getReservationId(), "You have 10 minutes left before your reservation ends.");
+            }
+        }
     }
 }

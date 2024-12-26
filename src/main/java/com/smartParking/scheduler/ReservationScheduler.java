@@ -17,5 +17,6 @@ public class ReservationScheduler {
         reservationService.applyNoShowPenalties();
         reservationService.applyOverStayPenalties();
         reservationService.releaseExpiredReservations();
+        reservationService.startReservations();
     }
 }
