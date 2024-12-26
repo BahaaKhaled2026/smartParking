@@ -11,5 +11,5 @@ public interface ParkingSpotDAO {
     boolean updateParkingSpot(ParkingSpot parkingSpot);
     boolean deleteParkingSpot(int spotId);
     List<ParkingSpot> findAvailableSpotsByLocation(String location);
-
+    int getLotIdBySpotId(int spotId);
 }

@@ -46,6 +46,16 @@ public class ReservationController {
         }
     }
 
+    @GetMapping("/arrive/{reservationId}")
+    public ResponseEntity<String> arriveAtSpot(@PathVariable int reservationId) {
+        try {
+            reservationService.arriveAtSpot(reservationId);
+            return ResponseEntity.ok("Arrived at spot successfully");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Reservation>> getUserReservations(@PathVariable int userId) {
         List<Reservation> reservations = reservationService.getUserReservations(userId);

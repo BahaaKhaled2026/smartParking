@@ -42,16 +42,8 @@ CREATE TABLE reservations (
     end_time DATETIME NOT NULL,
     status ENUM('ACTIVE', 'COMPLETED', 'CANCELLED' , 'NO_SHOW' , 'OVER_STAY') NOT NULL DEFAULT 'ACTIVE',
     penalty DECIMAL(10, 2) DEFAULT 0.00, -- For no-show or overstay
+	cost DECIMAL(10, 2) DEFAULT 0.00, 
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (spot_id) REFERENCES parking_spots(spot_id) ON DELETE CASCADE
 );
 
-
-CREATE TABLE pricing_rules (
-    rule_id INT AUTO_INCREMENT PRIMARY KEY,
-    lot_id INT NOT NULL,
-    start_time TIME NOT NULL,
-    end_time TIME NOT NULL,
-    price_per_hour DECIMAL(10, 2) NOT NULL,
-    FOREIGN KEY (lot_id) REFERENCES parking_lots(lot_id) ON DELETE CASCADE
-);

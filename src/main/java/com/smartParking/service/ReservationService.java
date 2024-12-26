@@ -12,4 +12,8 @@ public interface ReservationService {
     void applyNoShowPenalties();
     void releaseExpiredReservations();
     void finishReservation(int reservationId);
+    void startReservations();
+    void arriveAtSpot(int reservationId);
+    void tenMinuteLeftNotification();
 }
+

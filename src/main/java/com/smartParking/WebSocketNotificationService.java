@@ -1,5 +1,6 @@
 package com.smartParking;
 
+import com.smartParking.NotificationMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,13 @@ public class WebSocketNotificationService {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
 
-    public void notify(String destination, Object payload) {
-        messagingTemplate.convertAndSend(destination, payload);
+    public void notifyPenalty(int reservationId, String message) {
+        messagingTemplate.convertAndSend("/topic/penalties",
+                new NotificationMessage(reservationId, message));
+    }
+
+    public void notifyTenMinuteLeft(int reservationId, String message) {
+        messagingTemplate.convertAndSend("/topic/tenMinuteLeft",
+                new NotificationMessage(reservationId, message));
     }
 }
