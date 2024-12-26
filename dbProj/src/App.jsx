@@ -1,17 +1,18 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import MapWithUserLocation from './Map'
-import { DashboardSidebar } from './Components/DashboardSidebar'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
+import MapWithUserLocation from './Map';
+import MainPage from './Pages/MainPage';
 
 function App() {
   return (
-    <div  className="flex w-full justify-between items-center">
-      <DashboardSidebar/>
-      <MapWithUserLocation/>
-    </div>
-  )
+    <Router>
+      <div className="w-full">
+        <Routes>
+          <Route path="/main" element={<MainPage />} />
+        </Routes>
+      </div>
+    </Router>
+  );
 }
 
-export default App
+export default App;
