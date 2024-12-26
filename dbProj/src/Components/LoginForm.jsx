@@ -9,7 +9,7 @@ import mailIcon from '../assets/mail-icon.svg';
 import eyeOffIcon from '../assets/eye-off-icon.svg';
 import eyeIcon from '../assets/eye-icon.svg';
 import useFetch from '../hooks/useFetch';
-// import { authUsingProv, sendOtp, validateForm } from "../Utils/formUtils";
+import { authUsingProv, sendOtp, validateForm } from "../Utils/formUtils";
 import { useRecoilState } from 'recoil';
 import { userState, isAuthenticatedState } from '../recoil/atoms';
 
@@ -93,7 +93,7 @@ function LoginForm() {
     }
     const generatedOtp = generateOtp();
     setOtp(generatedOtp);
-    // sendOtp(generatedOtp, email);
+    sendOtp(generatedOtp, email);
     setOtpSent(true);
   };
 
@@ -247,11 +247,11 @@ function LoginForm() {
                 onClick={togglePasswordVisibility}
               />
             </div>
-            {/* <div className="text-right mt-2">
+            <div className="text-right mt-2">
               <a href="#" onClick={handleSendOtp} className="hyperlinks">
                 Forgot Password?
               </a>
-            </div> */}
+            </div>
             {errors.password &&
             <p className="errorMsg">
               { errors.password }
@@ -277,10 +277,10 @@ function LoginForm() {
                 placeholder="Enter OTP"
                 value={otpInput}
                 onChange={e => setOtpInput(e.target.value)}
-                className="otp-input"
+                className="otp-input email-input text-gray-500 w-3/5 p-2 border rounded-lg"
               />
               <button
-                className={`${otpDone ? 'bg-green-600 p-1 rounded-full' : ''} h-7 w-7 shadow-xl flex justify-center items-center`}
+                className={`${otpDone ? 'bg-green-600 p-1 rounded-full' : 'bg-gray-300 ml-5'} h-7 w-7 shadow-xl flex justify-center items-center`}
                 onClick={handleVerifyOtp}>
                 <i className="fa-solid fa-check">
                 </i>

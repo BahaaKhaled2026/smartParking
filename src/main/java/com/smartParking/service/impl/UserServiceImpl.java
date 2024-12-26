@@ -74,5 +74,14 @@ public class UserServiceImpl implements UserService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         SecurityContextHolder.clearContext();
     }
+
+    @Override
+    public boolean forgetPassword(String email, String newPassword) {
+        User user = userDAO.getUserByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("User not found with account: " + email));
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userDAO.updateUser(user);
+        return true;
+    }
 }
 

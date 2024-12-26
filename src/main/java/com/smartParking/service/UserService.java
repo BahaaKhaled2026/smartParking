@@ -10,5 +10,7 @@ public interface UserService {
     List<User> getAllUsers(); // Admin-only: Retrieve all users
     boolean updateUserRole(int userId, String newRole); // Admin-only: Update user roles
 
-    public void signOut(); // Sign out a user
+    void signOut(); // Sign out a user
+
+    boolean forgetPassword(String email, String password);
 }
