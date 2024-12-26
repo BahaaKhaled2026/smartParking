@@ -1,20 +1,27 @@
 package com.smartParking.service.impl;
 
 import com.smartParking.dao.ParkingSpotDAO;
+import com.smartParking.dao.UserDAO;
 import com.smartParking.model.ParkingSpot;
 import com.smartParking.service.ParkingSpotService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import com.smartParking.model.User;
+
 
 @Service
 public class ParkingSpotServiceImpl implements ParkingSpotService {
 
     @Autowired
     private ParkingSpotDAO parkingSpotDAO;
+
+    @Autowired
+    private UserDAO userDAO;
 
     @Override
     public List<ParkingSpot> getAvailableSpots(int lotId) {
@@ -23,19 +30,6 @@ public class ParkingSpotServiceImpl implements ParkingSpotService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    @Transactional
-    public boolean reserveSpot(int spotId) {
-        ParkingSpot spot = parkingSpotDAO.getParkingSpotById(spotId)
-                .orElseThrow(() -> new IllegalStateException("Parking spot not found"));
-
-        if (!"AVAILABLE".equals(spot.getStatus())) {
-            throw new IllegalStateException("Parking spot is not available");
-        }
-
-        spot.setStatus("RESERVED");
-        return parkingSpotDAO.updateParkingSpot(spot);
-    }
 
     @Override
     @Transactional
@@ -52,7 +46,7 @@ public class ParkingSpotServiceImpl implements ParkingSpotService {
     public boolean updateSpotStatus(int spotId, String status) {
         ParkingSpot spot = parkingSpotDAO.getParkingSpotById(spotId)
                 .orElseThrow(() -> new IllegalStateException("Parking spot not found."));
-        if (!List.of("AVAILABLE", "RESERVED", "OUT_OF_SERVICE").contains(status)) {
+        if (!List.of("AVAILABLE", "RESERVED", "OCCUPIED").contains(status)) {
             throw new IllegalStateException("Invalid status: " + status);
         }
         spot.setStatus(status);

@@ -5,22 +5,27 @@ import java.time.LocalDateTime;
 public class ParkingLot {
     private int lotId;
     private String name;
-    private String location;
+    private String longitude;
+    private String latitude;
     private int capacity;
     private LocalDateTime createdAt;
 
-    // Constructors
-    public ParkingLot(int lotId, String name, String location, int capacity, LocalDateTime createdAt) {
+    public ParkingLot() {
+    }
+
+    public ParkingLot(int lotId, String name, String longitude, String latitude, int capacity, LocalDateTime createdAt) {
         this.lotId = lotId;
         this.name = name;
-        this.location = location;
+        this.longitude = longitude;
+        this.latitude = latitude;
         this.capacity = capacity;
         this.createdAt = createdAt;
     }
 
-    public ParkingLot(String name, String location, int capacity) {
+    public ParkingLot(String name, String longitude, String latitude, int capacity) {
         this.name = name;
-        this.location = location;
+        this.longitude = longitude;
+        this.latitude = latitude;
         this.capacity = capacity;
     }
 
@@ -40,12 +45,20 @@ public class ParkingLot {
         this.name = name;
     }
 
-    public String getLocation() {
-        return location;
+    public String getLongitude() {
+        return longitude;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
     }
 
     public int getCapacity() {

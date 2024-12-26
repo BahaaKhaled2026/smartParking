@@ -29,7 +29,8 @@ public class ParkingLotDAOImpl implements ParkingLotDAO {
             return new ParkingLot(
                     rs.getInt("lot_id"),
                     rs.getString("name"),
-                    rs.getString("location"),
+                    rs.getString("longitude"),
+                    rs.getString("latitude"),
                     rs.getInt("capacity"),
                     rs.getTimestamp("created_at").toLocalDateTime()
             );
@@ -38,14 +39,15 @@ public class ParkingLotDAOImpl implements ParkingLotDAO {
 
     @Override
     public int createParkingLot(ParkingLot parkingLot) {
-        String sql = "INSERT INTO parking_lots (name, location, capacity) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO parking_lots (name, longitude, latitude, capacity) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, parkingLot.getName());
-            ps.setString(2, parkingLot.getLocation());
-            ps.setInt(3, parkingLot.getCapacity());
+            ps.setString(2, parkingLot.getLongitude());
+            ps.setString(3, parkingLot.getLatitude());
+            ps.setInt(4, parkingLot.getCapacity());
             return ps;
         }, keyHolder);
 
@@ -66,8 +68,8 @@ public class ParkingLotDAOImpl implements ParkingLotDAO {
 
     @Override
     public boolean updateParkingLot(ParkingLot parkingLot) {
-        String sql = "UPDATE parking_lots SET name = ?, location = ?, capacity = ? WHERE lot_id = ?";
-        return jdbcTemplate.update(sql, parkingLot.getName(), parkingLot.getLocation(), parkingLot.getCapacity(), parkingLot.getLotId()) > 0;
+        String sql = "UPDATE parking_lots SET name = ?, longitude = ?, latitude = ?, capacity = ? WHERE lot_id = ?";
+        return jdbcTemplate.update(sql, parkingLot.getName(), parkingLot.getLongitude(), parkingLot.getLatitude(), parkingLot.getCapacity(), parkingLot.getLotId()) > 0;
     }
 
     @Override

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/parking-spots")
+@RequestMapping("/parking-spots")
 public class ParkingSpotController {
 
     @Autowired
@@ -21,15 +21,6 @@ public class ParkingSpotController {
         return ResponseEntity.ok(availableSpots);
     }
 
-    @PostMapping("/reserve/{spotId}")
-    public ResponseEntity<String> reserveSpot(@PathVariable int spotId) {
-        try {
-            parkingSpotService.reserveSpot(spotId);
-            return ResponseEntity.ok("Spot reserved successfully");
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
 
     @PostMapping("/release/{spotId}")
     public ResponseEntity<String> releaseSpot(@PathVariable int spotId) {

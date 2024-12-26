@@ -26,6 +26,10 @@ public class PricingRule {
         this.pricePerHour = pricePerHour;
     }
 
+
+    public PricingRule() {
+    }
+
     public int getRuleId() {
         return ruleId;
     }

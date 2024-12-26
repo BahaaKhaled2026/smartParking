@@ -34,7 +34,8 @@ public class ReservationDAOImpl implements ReservationDAO {
                     rs.getTimestamp("start_time").toLocalDateTime(),
                     rs.getTimestamp("end_time").toLocalDateTime(),
                     rs.getString("status"),
-                    rs.getBigDecimal("penalty")
+                    rs.getBigDecimal("penalty"),
+                    rs.getBigDecimal("cost")
             );
         }
     };
@@ -55,7 +56,7 @@ public class ReservationDAOImpl implements ReservationDAO {
         jdbcTemplate.update(updateSpotSql, reservation.getSpotId());
 
         // Step 3: Insert the reservation
-        String reservationSql = "INSERT INTO reservations (user_id, spot_id, start_time, end_time, status, penalty) VALUES (?, ?, ?, ?, ?, ?)";
+        String reservationSql = "INSERT INTO reservations (user_id, spot_id, start_time, end_time, status, penalty, cost) VALUES (?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -66,6 +67,7 @@ public class ReservationDAOImpl implements ReservationDAO {
             ps.setTimestamp(4, java.sql.Timestamp.valueOf(reservation.getEndTime()));
             ps.setString(5, reservation.getStatus());
             ps.setBigDecimal(6, reservation.getPenalty());
+            ps.setBigDecimal(7, reservation.getCost());
             return ps;
         }, keyHolder);
 
@@ -93,12 +95,13 @@ public class ReservationDAOImpl implements ReservationDAO {
     @Override
     @Transactional
     public boolean updateReservation(Reservation reservation) {
-        String sql = "UPDATE reservations SET start_time = ?, end_time = ?, status = ?, penalty = ? WHERE reservation_id = ?";
+        String sql = "UPDATE reservations SET start_time = ?, end_time = ?, status = ?, penalty = ?, cost = ? WHERE reservation_id = ?";
         return jdbcTemplate.update(sql,
                 java.sql.Timestamp.valueOf(reservation.getStartTime()),
                 java.sql.Timestamp.valueOf(reservation.getEndTime()),
                 reservation.getStatus(),
                 reservation.getPenalty(),
+                reservation.getCost(),
                 reservation.getReservationId()) > 0;
     }
 
@@ -134,7 +137,7 @@ public class ReservationDAOImpl implements ReservationDAO {
     public List<Reservation> getExpiredReservations(LocalDateTime currentTime) {
         String sql = """
         SELECT * FROM reservations
-        WHERE end_time < ? AND status = 'ACTIVE'
+        WHERE end_time < ? AND status = 'ACTIVE' OR status = 'OVER_STAY'
     """;
         return jdbcTemplate.query(sql, reservationRowMapper, currentTime);
     }
@@ -143,6 +146,15 @@ public class ReservationDAOImpl implements ReservationDAO {
         String sql = """
         SELECT * FROM reservations
         WHERE status = ?
+    """;
+        return jdbcTemplate.query(sql, reservationRowMapper, status);
+    }
+
+    @Override
+    public List<Reservation> getReservationsBySpotStatus(String status) {
+        String sql = """
+        SELECT * FROM reservations
+        WHERE spot_id IN (SELECT spot_id FROM parking_spots WHERE status = ?)
     """;
         return jdbcTemplate.query(sql, reservationRowMapper, status);
     }

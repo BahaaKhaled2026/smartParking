@@ -1,5 +1,6 @@
 package com.smartParking.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class User {
@@ -9,25 +10,31 @@ public class User {
     private String role;
     private String email;
     private String licensePlate;
+    private BigDecimal totalPenalty;
     private LocalDateTime createdAt;
 
+    public User() {
+    }
+
     // Constructor, Getters, Setters, toString()
-    public User(int userId, String username, String password, String role, String email, String licensePlate, LocalDateTime createdAt) {
+    public User(int userId, String username, String password, String role, String email, String licensePlate,BigDecimal totalPenalty, LocalDateTime createdAt) {
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.role = role;
         this.email = email;
         this.licensePlate = licensePlate;
+        this.totalPenalty = totalPenalty;
         this.createdAt = createdAt;
     }
 
-    public User(String username, String password, String role, String email, String licensePlate) {
+    public User(String username, String password, String role, String email, BigDecimal totalPenalty, String licensePlate) {
         this.username = username;
         this.password = password;
         this.role = role;
         this.email = email;
         this.licensePlate = licensePlate;
+        this.totalPenalty = totalPenalty;
     }
 
     public int getUserId() {
@@ -76,6 +83,14 @@ public class User {
 
     public void setLicensePlate(String licensePlate) {
         this.licensePlate = licensePlate;
+    }
+
+    public BigDecimal getTotalPenalty() {
+        return totalPenalty;
+    }
+
+    public void setTotalPenalty(BigDecimal totalPenalty) {
+        this.totalPenalty = totalPenalty;
     }
 
     public LocalDateTime getCreatedAt() {

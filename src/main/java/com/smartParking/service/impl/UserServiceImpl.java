@@ -3,12 +3,13 @@ package com.smartParking.service.impl;
 import com.smartParking.dao.UserDAO;
 import com.smartParking.model.User;
 import com.smartParking.service.UserService;
+import com.smartParking.tokenization.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -16,27 +17,34 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDAO userDAO;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+
+    private final JwtUtils jwtUtils = new JwtUtils();
+
 
     @Override
-    public int signup(User user) {
+    public Object[] signup(User user) {
         userDAO.getUserByUsername(user.getUsername()).ifPresent(existing -> {
             throw new IllegalStateException("Username already exists.");
         });
 
+        userDAO.getUserByEmail(user.getEmail()).ifPresent(existing -> {
+            throw new IllegalStateException("Email already exists.");
+        });
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userDAO.createUser(user);
+        return new Object[] {user, jwtUtils.generateToken(user.getEmail())};
     }
 
     @Override
-    public User login(String username, String password) {
-        User user = userDAO.getUserByUsername(username)
+    public Object[] login(String email, String password) {
+        User user = userDAO.getUserByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("Invalid username or password."));
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalStateException("Invalid username or password.");
         }
-        return user;
+        return new Object[] {user, jwtUtils.generateToken(email)};
     }
 
     @Override

@@ -33,6 +33,7 @@ public class UserDAOImpl implements UserDAO {
                     rs.getString("role"),
                     rs.getString("email"),
                     rs.getString("license_plate"),
+                    rs.getBigDecimal("total_penalty"),
                     rs.getTimestamp("created_at").toLocalDateTime()
             );
         }
@@ -40,7 +41,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public int createUser(User user) {
-        String sql = "INSERT INTO users (username, password, role, email, license_plate) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (username, password, role, email, license_plate, total_penalty) VALUES (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -50,6 +51,7 @@ public class UserDAOImpl implements UserDAO {
             ps.setString(3, user.getRole());
             ps.setString(4, user.getEmail());
             ps.setString(5, user.getLicensePlate());
+            ps.setBigDecimal(6, user.getTotalPenalty());
             return ps;
         }, keyHolder);
 
@@ -69,6 +71,11 @@ public class UserDAOImpl implements UserDAO {
         return jdbcTemplate.query(sql, userRowMapper, username).stream().findFirst();
     }
 
+    @Override
+    public Optional<User> getUserByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ?";
+        return jdbcTemplate.query(sql, userRowMapper, email).stream().findFirst();
+    }
 
     @Override
     public List<User> getAllUsers() {
@@ -78,9 +85,9 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updateUser(User user) {
-        String sql = "UPDATE users SET username = ?, password = ?, role = ?, email = ?, license_plate = ? WHERE user_id = ?";
+        String sql = "UPDATE users SET username = ?, password = ?, role = ?, email = ?, license_plate = ?, total_penalty = ? WHERE user_id = ?";
         return jdbcTemplate.update(sql, user.getUsername(), user.getPassword(), user.getRole(),
-                user.getEmail(), user.getLicensePlate(), user.getUserId()) > 0;
+                user.getEmail(), user.getLicensePlate(), user.getTotalPenalty(), user.getUserId()) > 0;
     }
 
     @Override

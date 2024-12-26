@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/reservations")
+@RequestMapping("/reservations")
 public class ReservationController {
 
     @Autowired
@@ -36,29 +36,20 @@ public class ReservationController {
         }
     }
 
+    @GetMapping("/finish/{reservationId}")
+    public ResponseEntity<String> finishReservation(@PathVariable int reservationId) {
+        try {
+            reservationService.finishReservation(reservationId);
+            return ResponseEntity.ok("Reservation finished successfully");
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Reservation>> getUserReservations(@PathVariable int userId) {
         List<Reservation> reservations = reservationService.getUserReservations(userId);
         return ResponseEntity.ok(reservations);
     }
 
-    @GetMapping("/penalty/{reservationId}")
-    public ResponseEntity<BigDecimal> calculatePenalty(@PathVariable int reservationId) {
-        try {
-            BigDecimal penalty = reservationService.calculatePenalty(reservationId);
-            return ResponseEntity.ok(penalty);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(BigDecimal.ZERO);
-        }
-    }
-
-    @GetMapping("/cost/{reservationId}")
-    public ResponseEntity<BigDecimal> calculateReservationCost(@PathVariable int reservationId) {
-        try {
-            BigDecimal cost = reservationService.calculateReservationCost(reservationId);
-            return ResponseEntity.ok(cost);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(BigDecimal.ZERO);
-        }
-    }
 }

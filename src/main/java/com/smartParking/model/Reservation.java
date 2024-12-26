@@ -9,11 +9,14 @@ public class Reservation {
     private int spotId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private String status; // ACTIVE, COMPLETED, CANCELLED
+    private String status; // ACTIVE, COMPLETED, CANCELLED, OVER_STAY, NO_SHOW
     private BigDecimal penalty;
+    private BigDecimal cost;
+
+
 
     // Constructors
-    public Reservation(int reservationId, int userId, int spotId, LocalDateTime startTime, LocalDateTime endTime, String status, BigDecimal penalty) {
+    public Reservation(int reservationId, int userId, int spotId, LocalDateTime startTime, LocalDateTime endTime, String status, BigDecimal penalty, BigDecimal cost) {
         this.reservationId = reservationId;
         this.userId = userId;
         this.spotId = spotId;
@@ -21,15 +24,20 @@ public class Reservation {
         this.endTime = endTime;
         this.status = status;
         this.penalty = penalty;
+        this.cost = cost;
     }
 
-    public Reservation(int userId, int spotId, LocalDateTime startTime, LocalDateTime endTime, String status, BigDecimal penalty) {
+    public Reservation(int userId, int spotId, LocalDateTime startTime, LocalDateTime endTime, String status, BigDecimal penalty, BigDecimal cost) {
         this.userId = userId;
         this.spotId = spotId;
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
         this.penalty = penalty;
+        this.cost = cost;
+    }
+
+    public Reservation() {
     }
 
     public int getReservationId() {
@@ -86,5 +94,13 @@ public class Reservation {
 
     public void setPenalty(BigDecimal penalty) {
         this.penalty = penalty;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
     }
 }

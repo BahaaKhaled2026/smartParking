@@ -23,6 +23,9 @@ public class ParkingSpot {
         this.status = status;
     }
 
+    public ParkingSpot() {
+    }
+
     public int getSpotId() {
         return spotId;
     }

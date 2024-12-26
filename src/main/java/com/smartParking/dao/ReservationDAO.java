@@ -16,4 +16,5 @@ public interface ReservationDAO {
     boolean isSpotAvailableForDuration(int spotId, LocalDateTime startTime, LocalDateTime endTime);
     List<Reservation> getExpiredReservations(LocalDateTime currentTime);
     List<Reservation> getReservationsByStatus(String status);
+    List<Reservation> getReservationsBySpotStatus(String status);
 }

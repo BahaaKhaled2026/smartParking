@@ -2,48 +2,43 @@ package com.smartParking.controller;
 
 import com.smartParking.model.User;
 import com.smartParking.service.UserService;
+import com.smartParking.tokenization.JwtResponse;
+import com.smartParking.tokenization.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody User user) {
+    public ResponseEntity<?> signup(@RequestBody User user) {
         try {
-            int userId = userService.signup(user);
-            return ResponseEntity.ok("User signed up successfully with ID: " + userId);
+            Object[] newUser = userService.signup(user);
+            return ResponseEntity.ok(new JwtResponse(newUser));
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(400).body(Map.of("message", e.getMessage())); // Return error message if account already exists
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody User loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
-            User user = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
-            return ResponseEntity.ok(user);
+            Object[] token = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+            return ResponseEntity.ok(new JwtResponse(token));
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.status(400).body(Map.of("message", e.getMessage())); // Return error message if account already exists
         }
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<User> getUserById(@PathVariable int userId) {
-        try {
-            User user = userService.getUserById(userId);
-            return ResponseEntity.ok(user);
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
-    }
+
     @GetMapping("/admin/all")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
