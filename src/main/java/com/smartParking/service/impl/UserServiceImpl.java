@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
         });
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userDAO.createUser(user);
         return new Object[] {user, jwtUtils.generateToken(user.getEmail())};
     }
 

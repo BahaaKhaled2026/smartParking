@@ -34,6 +34,7 @@ public class UserDAOImpl implements UserDAO {
                     rs.getString("email"),
                     rs.getString("license_plate"),
                     rs.getBigDecimal("total_penalty"),
+                    rs.getBigDecimal("balance"),
                     rs.getTimestamp("created_at").toLocalDateTime()
             );
         }
@@ -41,7 +42,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public int createUser(User user) {
-        String sql = "INSERT INTO users (username, password, role, email, license_plate, total_penalty) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (username, password, role, email, license_plate, total_penalty, balance) VALUES (?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -52,6 +53,7 @@ public class UserDAOImpl implements UserDAO {
             ps.setString(4, user.getEmail());
             ps.setString(5, user.getLicensePlate());
             ps.setBigDecimal(6, user.getTotalPenalty());
+            ps.setBigDecimal(7, user.getBalance());
             return ps;
         }, keyHolder);
 
@@ -85,9 +87,9 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean updateUser(User user) {
-        String sql = "UPDATE users SET username = ?, password = ?, role = ?, email = ?, license_plate = ?, total_penalty = ? WHERE user_id = ?";
+        String sql = "UPDATE users SET username = ?, password = ?, role = ?, email = ?, license_plate = ?, total_penalty = ?, balance = ? WHERE user_id = ?";
         return jdbcTemplate.update(sql, user.getUsername(), user.getPassword(), user.getRole(),
-                user.getEmail(), user.getLicensePlate(), user.getTotalPenalty(), user.getUserId()) > 0;
+                user.getEmail(), user.getLicensePlate(), user.getTotalPenalty(), user.getBalance(), user.getUserId()) > 0;
     }
 
     @Override

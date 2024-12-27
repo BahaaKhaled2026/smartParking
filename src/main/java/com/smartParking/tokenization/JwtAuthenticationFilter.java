@@ -15,6 +15,9 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public static final String USERS = "/users/";
+    public static final String SPOTS = "/spots/";
+    public static final String LOTS = "/lots/";
+    public static final String RESERVATIONS = "/reservations/";
     @Autowired
     private JwtUtils jwtUtils;
 
@@ -42,7 +45,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // Check if the request is for /signup or /login
         String requestUri = request.getRequestURI();
-        if ((USERS + "signup").equals(requestUri) || (USERS + "login").equals(requestUri) || ("/ws/**").equals(requestUri)) {
+        if ((USERS + "signup").equals(requestUri) || (USERS + "login").equals(requestUri) || ("/ws/**").equals(requestUri) || ("/ws").equals(requestUri)
+        || (SPOTS + "getspots").equals(requestUri) || (LOTS + "getlots").equals(requestUri) || (RESERVATIONS + "reserve").equals(requestUri)) {
             // If the request is for /signup or /login, skip the filter and continue the chain
             filterChain.doFilter(request, response);
             return;

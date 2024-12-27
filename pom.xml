@@ -88,6 +88,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>xin.xihc</groupId>
+			<artifactId>CommonUtils</artifactId>
+			<version>1.20.9</version>
+		</dependency>
+
+
 	</dependencies>
 
 	<build>

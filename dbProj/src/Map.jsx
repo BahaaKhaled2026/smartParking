@@ -1,20 +1,25 @@
-'use client'
-
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import 'leaflet-routing-machine';
+import { useRecoilState } from 'recoil';
+import { chosenLot } from './state';
+import useFetch from './Hooks/useFetch';
 
-// Custom marker icon
-const customIcon = new L.Icon({
+const defaultIcon = new L.Icon({
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });
 
-// Routing control component
+const blackIcon = new L.Icon({
+  iconUrl: 'https://static.vecteezy.com/system/resources/previews/022/187/623/large_2x/map-location-pin-icon-free-png.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
+
 function RoutingMachine({ start, end }) {
   const map = useMap();
 
@@ -23,11 +28,11 @@ function RoutingMachine({ start, end }) {
 
     const routingControl = L.Routing.control({
       waypoints: [L.latLng(start.lat, start.lng), L.latLng(end.lat, end.lng)],
-      routeWhileDragging: true,
+      routeWhileDragging: false,
       lineOptions: {
         styles: [{ color: 'black', weight: 4 }],
       },
-      show: false,
+      createMarker: () => null,
       addWaypoints: false,
       fitSelectedRoutes: true,
       showAlternatives: false,
@@ -38,19 +43,29 @@ function RoutingMachine({ start, end }) {
 
   return null;
 }
-
-const MapWithUserLocation = () => {
+const MapWithUserLocation = ({mobile}) => {
   const [userLocation, setUserLocation] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [selectedDestinationId, setSelectedDestinationId] = useState(null);
+  const [lot,setLot]=useRecoilState(chosenLot);
+  const { data: destinations, loading: loading1, error: error1 } = useFetch('http://localhost:8080/lots/getlots', {
+    method: 'GET',
+    token: 'your-token-here',
+    params: {}
+  }, []);
+  // const destinations = [
+  //   { lotId: 1, latitude: 31.2, longitude: 30, name: 'Destination 1' },
+  //   { lotId: 2, latitude: 31.5, longitude: 30.2, name: 'Destination 2' },
+  //   { lotId: 3, latitude: 31.8, longitude: 30.4, name: 'Destination 3' },
+  // ];
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setUserLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
           });
           setLoading(false);
         },
@@ -65,37 +80,51 @@ const MapWithUserLocation = () => {
     }
   }, []);
 
-  if (loading) {
+  if (loading1) {
     return <div>Loading...</div>;
   }
 
-  const position = userLocation ? [userLocation.lat, userLocation.lng] : [35, 35];
-  const destination = { lat: 31.2, lng: 30 };
+  const position = userLocation ? [userLocation.latitude, userLocation.longitude] : [35, 35];
+
+  
+
+  const handleMarkerClick = (destination) => {
+    setLot(destination);
+    setSelectedDestinationId(destination.lotId);
+  };
 
   return (
-    <div style={{ height: '91vh', width: '50%' ,overflow:'hidden',borderRadius:'20px'}}> 
-      <MapContainer
-        center={position}
-        zoom={13}
-        style={{ height: '100%', width: '100%' }}
-      >
+    <div  style={{ height: mobile?'300px':'100vh', width: mobile?'100%':'100%', overflow: 'hidden', borderRadius: '20px' }}>
+      <MapContainer center={position} zoom={13} style={{ height: '100%', width: '100%' }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         {userLocation && (
-          <Marker position={position} icon={customIcon}>
+          <Marker position={position} icon={blackIcon}>
             <Popup>
-              Your Location: {userLocation.lat.toFixed(4)}, {userLocation.lng.toFixed(4)}
+              Your Location: {userLocation.latitude.toFixed(4)}, {userLocation.longitude.toFixed(4)}
             </Popup>
           </Marker>
         )}
-        <Marker position={[destination.lat, destination.lng]} icon={customIcon}>
-          <Popup>
-            Destination: {destination.lat}, {destination.lng}
-          </Popup>
-        </Marker>
-        {userLocation && <RoutingMachine start={userLocation} end={destination} />}
+        {destinations.map((destination) => (
+          <Marker
+            key={destination.lotId}
+            position={[destination.latitude, destination.longitude]}
+            icon={selectedDestinationId === destination.lotId ? blackIcon : defaultIcon}
+            eventHandlers={{
+              click: () => handleMarkerClick(destination),
+            }}
+          >
+            <Popup>{destination.name}</Popup>
+          </Marker>
+        ))}
+        {userLocation && selectedDestinationId && (
+          <RoutingMachine
+            start={userLocation}
+            end={destinations.find((d) => d.id === selectedDestinationId)}
+          />
+        )}
       </MapContainer>
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
     </div>
@@ -103,4 +132,3 @@ const MapWithUserLocation = () => {
 };
 
 export default MapWithUserLocation;
-

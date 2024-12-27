@@ -29,8 +29,8 @@ public class ParkingLotDAOImpl implements ParkingLotDAO {
             return new ParkingLot(
                     rs.getInt("lot_id"),
                     rs.getString("name"),
-                    rs.getString("longitude"),
-                    rs.getString("latitude"),
+                    rs.getBigDecimal("longitude"),
+                    rs.getBigDecimal("latitude"),
                     rs.getInt("capacity"),
                     rs.getTimestamp("created_at").toLocalDateTime()
             );
@@ -45,8 +45,8 @@ public class ParkingLotDAOImpl implements ParkingLotDAO {
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, parkingLot.getName());
-            ps.setString(2, parkingLot.getLongitude());
-            ps.setString(3, parkingLot.getLatitude());
+            ps.setBigDecimal(2, parkingLot.getLongitude());
+            ps.setBigDecimal(3, parkingLot.getLatitude());
             ps.setInt(4, parkingLot.getCapacity());
             return ps;
         }, keyHolder);
