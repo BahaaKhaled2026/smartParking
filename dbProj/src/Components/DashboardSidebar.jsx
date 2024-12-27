@@ -1,9 +1,11 @@
-/* eslint-disable react/no-unknown-property */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
+
 import React from "react";
+import { currPanel } from "../state";
+import { useRecoilState } from "recoil";
 
 export function DashboardSidebar({ className, handleLogout }) {
+  const [panel, setPanel] = useRecoilState(currPanel);
+  
   return (
     <div
       className={`bg-black flex flex-col items-center md:items-start text-white pb-12 min-h-screen ${className} w-20 md:w-60`} // Set width to w-20 on smaller screens and w-60 on medium and up
@@ -59,6 +61,12 @@ export function DashboardSidebar({ className, handleLogout }) {
             <i class="fa-solid fa-sign-out"></i>
             <span className="hidden md:block">Logout</span>
           </button>
+          <button onClick={()=>{
+            if(panel==1)
+              setPanel(2)
+            else
+              setPanel(1)
+          }}>wow</button>
         </nav>
       </div>
     </div>

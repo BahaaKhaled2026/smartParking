@@ -32,4 +32,33 @@ export async function reserveSpot(token, reservation, reserve) {
       throw error;
     }
 }
+export async function getReservation(token, uID) {
+    const endpoint = `http://localhost:8080/reservations/user?userId=${uID}`;
+  
+    try {
+      const response = await fetch(endpoint, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) {
+        const contentType = response.headers.get('Content-Type');
+        if (contentType && contentType.includes('application/json')) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Unknown error occurred');
+        } else {
+          const errorText = await response.text();
+          throw new Error(errorText);
+        }
+      }
+      const data = await response.json();
+      console.log('Successful response:', data);
+      return data;
+    } catch (error) {
+      console.error('Error:', error.message);
+      throw error;
+    }
+}
   

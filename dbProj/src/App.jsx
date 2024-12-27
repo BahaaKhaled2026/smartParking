@@ -27,7 +27,6 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/resetpassword" element={<ResetPasswordPage />} />
             <Route path="/main" element={<MainPage />} />
-            {/* <Route path="/map" element={<MapWithUserLocation />} /> */}
           </Routes>
         </Suspense>
       </Router>

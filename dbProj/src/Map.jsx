@@ -5,8 +5,9 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import 'leaflet-routing-machine';
 import { useRecoilState } from 'recoil';
-import { chosenLot } from './state';
+import { chosenLot, currUser } from './state';
 import useFetch from './Hooks/useFetch';
+import useFetch2 from './Hooks/useFetch2';
 
 const defaultIcon = new L.Icon({
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
@@ -51,9 +52,11 @@ const MapWithUserLocation = ({mobile}) => {
   const [loading, setLoading] = useState(true);
   const [selectedDestinationId, setSelectedDestinationId] = useState(null);
   const [lot,setLot]=useRecoilState(chosenLot);
-  const { data: destinations, loading: loading1, error: error1 } = useFetch('http://localhost:8080/lots/getlots', {
+  const token=localStorage.getItem('token');
+  const[user,setUser]=useRecoilState(currUser);
+  const { data: destinations, loading: loading1, error: error1 } = useFetch2('http://localhost:8080/lots/getlots', {
     method: 'GET',
-    token: 'your-token-here',
+    token: token,
     params: {}
   }, []);
   useEffect(() => {

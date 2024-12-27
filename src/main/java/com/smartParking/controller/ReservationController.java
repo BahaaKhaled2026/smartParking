@@ -45,32 +45,44 @@ public class ReservationController {
 
 
     @DeleteMapping("/cancel")
-    public ResponseEntity<String> cancelReservation(@RequestParam("reservationId") int reservationId) {
+    public ResponseEntity<Map<String, Object>> cancelReservation(@RequestParam("reservationId") int reservationId) {
         try {
             reservationService.cancelReservation(reservationId);
-            return ResponseEntity.ok("Reservation canceled successfully");
+            return ResponseEntity.ok(Map.of(
+                    "message", "Reservation cancelled successfully"
+            ));
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", e.getMessage()
+            ));
         }
     }
 
     @GetMapping("/finish")
-    public ResponseEntity<String> finishReservation(@RequestParam("reservationId") int reservationId) {
+    public ResponseEntity<Map<String, Object>>finishReservation(@RequestParam("reservationId") int reservationId) {
         try {
             reservationService.finishReservation(reservationId);
-            return ResponseEntity.ok("Reservation finished successfully");
+            return ResponseEntity.ok(Map.of(
+                    "message", "Reservation finished successfully"
+            ));
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", e.getMessage()
+            ));
         }
     }
 
     @GetMapping("/arrive")
-    public ResponseEntity<String> arriveAtSpot(@RequestParam("reservationId") int reservationId) {
+    public ResponseEntity<Map<String, Object>> arriveAtSpot(@RequestParam("reservationId") int reservationId) {
         try {
             reservationService.arriveAtSpot(reservationId);
-            return ResponseEntity.ok("Arrived at spot successfully");
+            return ResponseEntity.ok(Map.of(
+                    "message", "Arrived at spot successfully"
+            ));
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", e.getMessage()
+            ));
         }
     }
 

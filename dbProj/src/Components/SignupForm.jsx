@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useRef, useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import useFetch from "../hooks/useFetch";
+import useFetch from "../Hooks/useFetch";
 import { authUsingProv, sendOtp, validateForm } from "../Utils/formUtils";
 import { isAuthenticatedState, userState } from "../recoil/atoms";
 import { useRecoilState } from "recoil";
@@ -39,6 +39,8 @@ const SignupForm = () => {
         role:"DRIVER",
         dateOfBirth:"",
         licensePlate:"",
+        balance:0,
+        totalPenalty:0,
     })
     const navigate=useNavigate();
 
@@ -104,7 +106,7 @@ const SignupForm = () => {
                         setIsAuthenticated(true);
                         toast.success("Sign up successful");
                         console.log("Sign up successful");
-                        navigate("/dashboard");
+                        navigate("/main");
                     },
                     ()=>{
                         window.scrollTo({

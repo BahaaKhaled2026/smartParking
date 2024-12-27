@@ -8,7 +8,7 @@ import ContinueSep from './ContinueSep';
 import mailIcon from '../assets/mail-icon.svg';
 import eyeOffIcon from '../assets/eye-off-icon.svg';
 import eyeIcon from '../assets/eye-icon.svg';
-import useFetch from '../hooks/useFetch';
+import useFetch from '../Hooks/useFetch';
 import { authUsingProv, sendOtp, validateForm } from "../Utils/formUtils";
 import { useRecoilState } from 'recoil';
 import { userState, isAuthenticatedState } from '../recoil/atoms';
@@ -39,7 +39,7 @@ function LoginForm() {
     const handleStorageChange = event => {
       if (event.key === 'token' && event.newValue) {
         toast.info('Another user is already logged in!');
-        navigate('/dashboard');
+        navigate('/main');
       }
     };
     window.addEventListener('storage', handleStorageChange);
@@ -127,7 +127,7 @@ function LoginForm() {
         const user = response.user;
         setUser(user);
         setIsAuthenticated(true);
-        navigate('/dashboard');
+        navigate('/main');
         resetLoginForm();
       } else {
         if (!err.status) {

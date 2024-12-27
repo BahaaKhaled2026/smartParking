@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useRecoilState } from "recoil";
-import { chosenLot, currPanel } from "../state";
+import { chosenLot, currPanel, currUser } from "../state";
 import MapWithUserLocation from '../Map';
 import useFetch from '../Hooks/useFetch';
 import { reserveSpot } from '../parkUtils/parkUtils';
+import useFetch2 from '../Hooks/useFetch2';
+import { useNavigate } from 'react-router-dom';
 
 const Booking = () => {
 
@@ -17,12 +19,23 @@ const Booking = () => {
   const [selectedSpot, setSelectedSpot] = useState(null);
   const [reserveObj, setReserveObj] = useState({});
   const isBookingDisabled = !selectedSpot || !startDate || !startHour || !endDate || !endHour;
-  const [price,setPrice]=useState(0)
-  const { data: parkingSpots, loading: loading1, error: error1 } = useFetch('http://localhost:8080/spots/getspots', {
+  const [price,setPrice]=useState(0);
+  const token=localStorage.getItem('token');
+  const[user,setUser]=useRecoilState(currUser);
+  const { data: parkingSpots, loading: loading1, error: error1 } = useFetch2('http://localhost:8080/spots/getspots', {
     method: 'GET',
-    token: 'your-token-here',
+    token: token,
     params: { lotId: lot ? lot.lotId : 0 }
   }, [lot]);
+  const navigate=useNavigate();
+  useEffect(()=>{
+    if(!token){
+        navigate('/')
+    }
+    else{
+        setUser(JSON.parse(localStorage.getItem('user')));
+    }
+  },[]);
 
   const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0'));
   useEffect(() => {
@@ -30,10 +43,8 @@ const Booking = () => {
         if (selectedSpot && startDate && startHour && endDate && endHour) {
             const startTime = new Date(`${startDate}T${startHour}:00`).toISOString();
             const endTime = new Date(`${endDate}T${endHour}:00`).toISOString();
-            
             const obj = {
-              reservationId: 1,
-              userId: 1,
+              userId: user.userId,
               spotId: selectedSpot.spotId,
               startTime,
               endTime,
@@ -42,7 +53,10 @@ const Booking = () => {
               cost: 0,
               penalty: 0,
             };
-            let x=await reserveSpot("", obj, false);
+            setReserveObj(obj);
+            let x=await reserveSpot(token, obj, false);
+            console.log(x);
+            
             setPrice(x.cost);
           } else {
             setReserveObj({});
@@ -51,11 +65,17 @@ const Booking = () => {
     }
     up();
   }, [selectedSpot, startDate, startHour, endDate, endHour]);
-
+  async function reserveSubmit(){
+    console.log(reserveObj);
+    
+    let temp=await reserveSpot(token,reserveObj,true);
+    console.log(temp);
+    
+  }
 
 
   return (
-    <div className={`${panel === 2 ? 'w-full lg:w-[40%]' : 'w-0'} bg-white text-black overflow-hidden p-5 ease-in-out duration-300 transition-all`}>
+    <div className={`${panel === 2 ? 'w-full lg:w-[40%] p-5' : 'w-0'} bg-white text-black overflow-hidden  ease-in-out duration-300 transition-all`}>
       <h1 className="text-3xl text-black mb-4">BOOK YOUR SPOT</h1>
       <div className="space-y-4">
         <div className="flex space-x-2">
@@ -135,7 +155,7 @@ const Booking = () => {
                 <div className="text-center">
                 <div className="text-lg font-bold">{spot.spotNumber}</div>
                 <div
-                    className={`text-sm ${
+                    className={`text-[10px] md:text-sm ${
                     spot.status.toLowerCase() === 'occupied'
                         ? 'text-red-500'
                         : spot.status.toLowerCase() === 'reserved'
@@ -153,12 +173,13 @@ const Booking = () => {
 
 
         <button
-          disabled={isBookingDisabled}
-          className={`w-full p-2 rounded ${
-            isBookingDisabled 
-              ? 'bg-gray-300 cursor-not-allowed' 
-              : 'bg-blue-500 text-white hover:bg-blue-600'
-          }`}
+            onClick={reserveSubmit}
+            disabled={isBookingDisabled}
+            className={`w-full p-2 rounded ${
+                isBookingDisabled 
+                ? 'bg-gray-300 cursor-not-allowed' 
+                : 'bg-blue-500 text-white hover:bg-blue-600'
+            }`}
         >
           Book Now
         </button>

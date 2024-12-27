@@ -1,6 +1,7 @@
 package com.smartParking.service.impl;
 
 import com.smartParking.WebSocketNotificationService;
+import com.smartParking.dao.ParkingLotDAO;
 import com.smartParking.dao.ReservationDAO;
 import com.smartParking.dao.ParkingSpotDAO;
 import com.smartParking.dao.UserDAO;
@@ -31,6 +32,9 @@ public class ReservationServiceImpl implements ReservationService {
     private UserDAO userDAO;
 
     @Autowired
+    private ParkingLotDAO parkingLotDAO;
+
+    @Autowired
     private WebSocketNotificationService notificationService;
 
     private static final BigDecimal PENALTY_RATE = BigDecimal.valueOf(0.1);
@@ -41,12 +45,12 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     public Number createReservation(Reservation reservation , boolean reserve) {
-//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-//        User user = userDAO.getUserByEmail(email)
-//                .orElseThrow(() -> new IllegalStateException("User not found"));
-//        if(!user.getRole().equals("DRIVER")) {
-//            throw new IllegalStateException("Only Drivers can make reservations.");
-//        }
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userDAO.getUserByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("User not found"));
+        if(!user.getRole().equals("DRIVER")) {
+            throw new IllegalStateException("Only Drivers can make reservations.");
+        }
         if(reservation.getStartTime() == null || reservation.getEndTime() == null) {
             throw new IllegalStateException("Start time and end time must be provided.");
         }
@@ -79,9 +83,12 @@ public class ReservationServiceImpl implements ReservationService {
                 .getLotId();
         reservation.setCost(calculateReservationCost(reservation.getStartTime(), reservation.getEndTime() , lotId));
         if(reserve){
-//            if(reservation.getCost().compareTo(user.getBalance()) > 0) {
-//                throw new IllegalStateException("Insufficient balance.");
-//            }
+            if(reservation.getCost().compareTo(user.getBalance()) > 0) {
+                throw new IllegalStateException("Insufficient balance.");
+            }
+            user.setBalance(user.getBalance().subtract(reservation.getCost()));
+            userDAO.updateUser(user);
+            parkingLotDAO.updateTotalRevenue(lotId, reservation.getCost());
             return reservationDAO.createReservation(reservation);
         }
         System.out.println("cost: " + reservation.getCost());
@@ -101,6 +108,20 @@ public class ReservationServiceImpl implements ReservationService {
 
         reservation.setStatus("CANCELLED");
         reservationDAO.updateReservation(reservation);
+
+        User user = userDAO.getUserById(reservation.getUserId())
+                .orElseThrow(() -> new IllegalStateException("User not found."));
+        user.setBalance(user.getBalance().add(reservation.getCost()));
+        BigDecimal penalty = reservation.getCost().multiply(PENALTY_RATE);
+        user.setTotalPenalty(user.getTotalPenalty().add(penalty));
+        notificationService.notifyPenalty(reservation.getReservationId(), "You have been charged a penalty of $" + penalty + " for cancelling your reservation.");
+        userDAO.updateUser(user);
+
+        int lotId = spot.getLotId();
+        parkingLotDAO.updateTotalRevenue(lotId, reservation.getCost().multiply(BigDecimal.valueOf(-1)));
+        parkingLotDAO.updateTotalPenalty(lotId, penalty);
+        parkingSpotDAO.updateParkingSpot(spot);
+
         return true;
     }
 
@@ -119,6 +140,14 @@ public class ReservationServiceImpl implements ReservationService {
         reservationDAO.updateReservation(reservation);
         spot.setStatus("AVAILABLE");
         parkingSpotDAO.updateParkingSpot(spot);
+
+        User user = userDAO.getUserById(reservation.getUserId())
+                .orElseThrow(() -> new IllegalStateException("User not found."));
+        user.setTotalPenalty(user.getTotalPenalty().add(penalty));
+        userDAO.updateUser(user);
+
+        int lotId = spot.getLotId();
+        parkingLotDAO.updateTotalPenalty(lotId, penalty);
         notificationService.notifyPenalty(reservation.getReservationId(), "You have been charged a penalty of $" + penalty + " for overstaying your reservation.");
     }
 
@@ -167,11 +196,13 @@ public class ReservationServiceImpl implements ReservationService {
                 parkingSpotDAO.updateParkingSpot(spot);
 
 
-
                 User user = userDAO.getUserById(reservation.getUserId())
                         .orElseThrow(() -> new IllegalStateException("User not found."));
                 user.setTotalPenalty(user.getTotalPenalty().add(penalty));
                 userDAO.updateUser(user);
+
+                int lotId = spot.getLotId();
+                parkingLotDAO.updateTotalPenalty(lotId, penalty);
 
                 notificationService.notifyPenalty(reservation.getReservationId(), "You have been charged a penalty of $" + penalty + " for not showing up to your reservation.");
             }

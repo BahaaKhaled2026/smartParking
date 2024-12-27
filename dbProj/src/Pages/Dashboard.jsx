@@ -1,7 +1,7 @@
 import { DashboardSidebar } from '../Components/DashboardSidebar';
 import MapWithUserLocation from '../Map';
 import { useNavigate } from 'react-router-dom';
-import useFetch from '../hooks/useFetch';
+import useFetch from '../Hooks/useFetch';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
