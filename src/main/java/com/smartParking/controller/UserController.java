@@ -6,9 +6,14 @@ import com.smartParking.service.impl.DashboardServiceImpl;
 import com.smartParking.tokenization.JwtResponse;
 import com.smartParking.tokenization.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -78,37 +83,56 @@ public class UserController {
     }
 
     @GetMapping("/admin/topUsers")
-    public ResponseEntity<?> getTopUsers() {
+    public ResponseEntity<Resource> getTopUsers() {
         try{
             dashboardService.topUsersJasperReport();
-            return ResponseEntity.ok("report has been made successfully") ;
+            // Path to the file
+            Path filePath = Paths.get("top_users_report.pdf").toAbsolutePath().normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (!resource.exists()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok().body(resource);
         }
         catch (Exception e){
-            return ResponseEntity.status(500).body(e.getMessage()) ;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null) ;
         }
     }
-    @GetMapping("/admin/lots")
-    public ResponseEntity<?> getTopLots() {
+    @GetMapping("/admin/topLots")
+    public ResponseEntity<Resource> getTopLots() {
         try{
             dashboardService.lotsJasperReport();
-            return ResponseEntity.ok("report has been made successfully") ;
+            // Path to the file
+            Path filePath = Paths.get("lots_report.pdf").toAbsolutePath().normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (!resource.exists()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok().body(resource);
+
         }
         catch (Exception e){
-            return ResponseEntity.status(500).body(e.getMessage()) ;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null) ;
         }
     }
 
     @GetMapping("/manager/lots/{managerId}")
-    public ResponseEntity<?> getLots(@PathVariable ("managerId") int Id) {
+    public ResponseEntity<Resource> getLots(@PathVariable ("managerId") int Id) {
         try{
             dashboardService.lotsMangerJasperReport(Id);
-            return ResponseEntity.ok("report has been made successfully") ;
+            // Path to the file
+            Path filePath = Paths.get("lots_manager_report.pdf").toAbsolutePath().normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (!resource.exists()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            }
+            return ResponseEntity.ok().body(resource);
         }
         catch (Exception e){
-            return ResponseEntity.status(500).body(e.getMessage()) ;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null) ;
         }
     }
-
-
-
 }
