@@ -38,6 +38,22 @@ public class UserController {
         }
     }
 
+    @PostMapping("signout")
+    public ResponseEntity<?> signout() {
+        userService.signOut();
+        return ResponseEntity.ok(Map.of("message", "Signed out successfully"));
+    }
+
+    @PostMapping("/forgetPassword")
+    public ResponseEntity<?> forgetPassword(@RequestBody LoginRequest forgetPasswordRequest) {
+        try {
+            boolean response = userService.forgetPassword(forgetPasswordRequest.getEmail(), forgetPasswordRequest.getPassword());
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(Map.of("message", e.getMessage())); // Return error message if account already exists
+        }
+    }
+
 
     @GetMapping("/admin/all")
     public ResponseEntity<List<User>> getAllUsers() {
@@ -54,5 +70,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+
 
 }
