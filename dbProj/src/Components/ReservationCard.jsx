@@ -1,12 +1,17 @@
 import React from 'react';
+import { cancelReservation } from '../parkUtils/parkUtils';
+import { useRecoilState } from 'recoil';
+import { changedReservations } from '../state';
 
-const ReservationCard = ({status,spotId,userId,startTime,endTime,cost,penalty,reservationId}) => {
+const ReservationCard = ({name,status,spotId,userId,startTime,endTime,cost,penalty,reservationId}) => {
+    const [change,setChange]=useRecoilState(changedReservations);
   return (
     <div className="bg-white border-2 border-black rounded-lg p-6 max-w-lg mx-auto  mt-5">
       <h2 className="text-2xl font-bold text-center mb-4">Reservation #{reservationId}</h2>
       <div className="mb-4">
         <p><span className="font-semibold">Status:</span> {status}</p>
         <p><span className="font-semibold">Spot ID:</span> {spotId}</p>
+        <p><span className="font-semibold">Lot Name:</span> {name}</p>
         <p><span className="font-semibold">Start Time:</span> {new Date(startTime).toLocaleString()}</p>
         <p><span className="font-semibold">End Time:</span> {new Date(endTime).toLocaleString()}</p>
         <p><span className="font-semibold">Cost:</span> ${cost.toFixed(2)}</p>
@@ -16,11 +21,14 @@ const ReservationCard = ({status,spotId,userId,startTime,endTime,cost,penalty,re
         <button className="bg-white text-black border border-black px-4 py-2 hover:bg-black hover:text-white">
           Edit
         </button>
-        <button className="bg-black text-white px-4 py-2 hover:bg-white hover:text-black hover:border hover:border-black">
+        <button onClick={async()=>{
+            await cancelReservation(reservationId);
+            setChange(prev=>!prev);
+        }} className="bg-black text-white px-4 py-2 hover:bg-white hover:text-black hover:border hover:border-black">
           Cancel
         </button>
         <button className="bg-white text-black border border-black px-4 py-2 hover:bg-black hover:text-white">
-          View Details
+          I am there
         </button>
       </div>
     </div>

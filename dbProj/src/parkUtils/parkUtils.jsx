@@ -33,6 +33,25 @@ export async function reserveSpot(token, reservation, reserve) {
       throw error;
     }
 }
+export const cancelReservation = async (reservationId) => {
+  try {
+    const url = `${BASE_URL}/reservations/cancel?reservationId=${reservationId}`;
+    console.log(url);
+
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) throw new Error('Failed to cancel reservation');
+    activeReservations = activeReservations.filter((id) => id !== reservationId);
+    console.log(`Cancelled reservation ${reservationId} successfully!`);
+  } catch (error) {
+    console.error('Error cancelling reservation:', error);
+  }
+};
 export async function getReservation(token, uID) {
     const endpoint = `http://localhost:8080/reservations/user?userId=${uID}`;
   

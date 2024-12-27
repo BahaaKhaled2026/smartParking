@@ -54,13 +54,20 @@ public class ParkingSpotDAOImpl implements ParkingSpotDAO {
         return jdbcTemplate.query(sql, parkingSpotRowMapper, lotId);
     }
 
+
     @Override
     @Transactional
     public boolean updateParkingSpot(ParkingSpot parkingSpot) {
-        String sql = "UPDATE parking_spots SET spot_number = ?, type = ?, status = ? WHERE spot_id = ? FOR UPDATE";
-        return jdbcTemplate.update(sql, parkingSpot.getSpotNumber(), parkingSpot.getType(),
+        // First, lock the row for update
+        String selectSql = "SELECT spot_id FROM parking_spots WHERE spot_id = ? FOR UPDATE";
+        jdbcTemplate.queryForObject(selectSql, Integer.class, parkingSpot.getSpotId());
+
+        // Now, update the parking spot
+        String updateSql = "UPDATE parking_spots SET spot_number = ?, type = ?, status = ? WHERE spot_id = ?";
+        return jdbcTemplate.update(updateSql, parkingSpot.getSpotNumber(), parkingSpot.getType(),
                 parkingSpot.getStatus(), parkingSpot.getSpotId()) > 0;
     }
+
 
     @Override
     @Transactional

@@ -61,15 +61,12 @@ public class ReservationServiceImpl implements ReservationService {
         if (hours > MAX_RESERVATION_HOURS) {
             throw new IllegalStateException("Reservations cannot exceed 24 hours.");
         }
-
         if (hours < MIN_RESERVATION_HOURS) {
             throw new IllegalStateException("Reservations must be at least 1 hour.");
         }
-
         if(reservation.getStartTime().isBefore(LocalDateTime.now())) {
             throw new IllegalStateException("Reservations cannot be made in the past.");
         }
-
         if(reservation.getEndTime().isBefore(reservation.getStartTime())) {
             throw new IllegalStateException("End time must be after start time.");
         }
@@ -78,6 +75,7 @@ public class ReservationServiceImpl implements ReservationService {
                 reservation.getStartTime(), reservation.getEndTime())) {
             throw new IllegalStateException("Spot is not available for the selected duration.");
         }
+
         int lotId = parkingSpotDAO.getParkingSpotById(reservation.getSpotId())
                 .orElseThrow(() -> new IllegalStateException("Parking spot not found"))
                 .getLotId();
@@ -98,6 +96,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     public boolean cancelReservation(int reservationId) {
+        System.out.println("yarab2");
         Reservation reservation = reservationDAO.getReservationById(reservationId)
                 .orElseThrow(() -> new IllegalStateException("Reservation not found"));
 

@@ -22,11 +22,11 @@ function App() {
       <Router>
         <Suspense>
           <Routes>
-            <Route path="/" element={<Intro />} />
+            {/* <Route path="/" element={<Intro />} /> */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/resetpassword" element={<ResetPasswordPage />} />
-            <Route path="/main" element={<MainPage />} />
+            <Route path="/" element={<MainPage />} />
           </Routes>
         </Suspense>
       </Router>
