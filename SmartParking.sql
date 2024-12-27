@@ -23,7 +23,9 @@ CREATE TABLE parking_lots (
     capacity INT NOT NULL, -- Total number of spots
 	total_revenue DECIMAL(10, 2) DEFAULT 0.00,
 	total_penalty DECIMAL(10, 2) DEFAULT 0.00,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
+    manger_id INT ,
+    FOREIGN KEY (manager_id) REFERENCES users(user_id) ON DELETE SET NULL
 );
 
 

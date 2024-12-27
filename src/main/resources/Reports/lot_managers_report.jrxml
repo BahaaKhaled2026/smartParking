@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+              http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="LotsManagerReport" language="java" pageWidth="595" pageHeight="842"
+              columnWidth="550" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+
+    <!-- Fields for the TopUser class -->
+    <field name="lotId" class="java.lang.Integer"/>
+    <field name="longitude" class="java.math.BigDecimal"/>
+    <field name="latitude" class="java.math.BigDecimal"/>
+    <field name="totalRevenue" class="java.math.BigDecimal"/>
+    <field name="totalPenalty" class="java.math.BigDecimal"/>
+    <field name="capacity" class="java.lang.Integer"/>
+    <field name="occupied" class="java.lang.Integer"/>
+    <field name="occupancy_rate" class="java.lang.Double"/>
+
+
+    <!-- Title of the report -->
+    <title>
+        <band height="80">
+            <staticText>
+                <reportElement x="200" y="40" width="80" height="30"/>
+
+                <textElement textAlignment="Center"/>
+
+                <text><![CDATA[Lots Manager Report]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <!-- Column headers -->
+    <columnHeader>
+        <band height="40">
+
+            <staticText>
+                <reportElement x="0" y="0" width="70" height="30"/>
+                <text><![CDATA[LotId]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="70" y="0" width="70" height="30"/>
+                <text><![CDATA[Longitude]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="140" y="0" width="70" height="30"/>
+                <text><![CDATA[Latitude]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="210" y="0" width="80" height="30"/>
+                <text><![CDATA[Total Revenue]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="290" y="0" width="80" height="30"/>
+                <text><![CDATA[Total Penalty]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="370" y="0" width="60" height="30"/>
+                <text><![CDATA[Capacity]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="430" y="0" width="60" height="30"/>
+                <text><![CDATA[Occupied]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement x="490" y="0" width="60" height="30"/>
+                <text><![CDATA[Occupancy Rate]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <!-- Data rows -->
+    <detail>
+        <band height="30">
+
+            <textField>
+                <reportElement x="0" y="0" width="70" height="30"/>
+                <textFieldExpression><![CDATA[$F{lotId}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="70" y="0" width="70" height="30"/>
+                <textFieldExpression><![CDATA[$F{longitude}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="140" y="0" width="70" height="30"/>
+                <textFieldExpression><![CDATA[$F{latitude}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="210" y="0" width="80" height="30"/>
+                <textFieldExpression><![CDATA[$F{totalRevenue}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="290" y="0" width="80" height="30"/>
+                <textFieldExpression><![CDATA[$F{totalPenalty}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="370" y="0" width="60" height="30"/>
+                <textFieldExpression><![CDATA[$F{capacity}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="430" y="0" width="30" height="30"/>
+                <textFieldExpression><![CDATA[$F{occupied}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="490" y="0" width="60" height="30"/>
+                <textFieldExpression><![CDATA[$F{occupancy_rate}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+</jasperReport>

@@ -2,6 +2,7 @@ package com.smartParking.controller;
 
 import com.smartParking.model.User;
 import com.smartParking.service.UserService;
+import com.smartParking.service.impl.DashboardServiceImpl;
 import com.smartParking.tokenization.JwtResponse;
 import com.smartParking.tokenization.LoginRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,11 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    DashboardServiceImpl dashboardService;
+
+
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody User user) {
@@ -68,6 +74,38 @@ public class UserController {
             return ResponseEntity.ok("User role updated successfully.");
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/admin/topUsers")
+    public ResponseEntity<?> getTopUsers() {
+        try{
+            dashboardService.topUsersJasperReport();
+            return ResponseEntity.ok("report has been made successfully") ;
+        }
+        catch (Exception e){
+            return ResponseEntity.status(500).body(e.getMessage()) ;
+        }
+    }
+    @GetMapping("/admin/lots")
+    public ResponseEntity<?> getTopLots() {
+        try{
+            dashboardService.lotsJasperReport();
+            return ResponseEntity.ok("report has been made successfully") ;
+        }
+        catch (Exception e){
+            return ResponseEntity.status(500).body(e.getMessage()) ;
+        }
+    }
+
+    @GetMapping("/manager/lots/{managerId}")
+    public ResponseEntity<?> getLots(@PathVariable ("managerId") int Id) {
+        try{
+            dashboardService.lotsMangerJasperReport(Id);
+            return ResponseEntity.ok("report has been made successfully") ;
+        }
+        catch (Exception e){
+            return ResponseEntity.status(500).body(e.getMessage()) ;
         }
     }
 
