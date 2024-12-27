@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import { useRecoilState } from "recoil";
 import { chosenLot, currPanel, currUser } from "../state";
@@ -48,6 +49,7 @@ const Booking = () => {
             const obj = {
               userId: user.userId,
               spotId: selectedSpot.spotId,
+              spotNumber:selectedSpot.spotNumber,
               startTime,
               endTime,
               spotType: selectedSpot.type,

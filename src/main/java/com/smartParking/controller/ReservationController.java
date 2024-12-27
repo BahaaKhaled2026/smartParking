@@ -46,6 +46,7 @@ public class ReservationController {
 
     @DeleteMapping("/cancel")
     public ResponseEntity<Map<String, Object>> cancelReservation(@RequestParam("reservationId") int reservationId) {
+        System.out.println("y3m ya ya sa7eb el gamal");
         try {
             reservationService.cancelReservation(reservationId);
             return ResponseEntity.ok(Map.of(

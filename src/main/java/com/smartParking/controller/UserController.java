@@ -44,8 +44,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("signout")
-    public ResponseEntity<?> signout() {
+    @PostMapping("/signOut")
+    public ResponseEntity<?> signOut() {
         userService.signOut();
         return ResponseEntity.ok(Map.of("message", "Signed out successfully"));
     }

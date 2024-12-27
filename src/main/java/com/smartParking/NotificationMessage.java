@@ -1,10 +1,10 @@
 package com.smartParking;
 
 public class NotificationMessage {
+
     private int reservationId;
     private String message;
 
-    // Constructor, Getters, and Setters
     public NotificationMessage(int reservationId, String message) {
         this.reservationId = reservationId;
         this.message = message;

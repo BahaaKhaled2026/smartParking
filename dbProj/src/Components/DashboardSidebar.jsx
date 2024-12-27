@@ -1,4 +1,5 @@
-
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 import React from "react";
 import { currPanel } from "../state";
 import { useRecoilState } from "recoil";
@@ -18,55 +19,62 @@ export function DashboardSidebar({ className, handleLogout }) {
         </div>
         <nav className="space-y-1">
           {/* Dashboard Button */}
-          <button className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
-            <i class="fa-solid fa-bars"></i>
+          <button 
+            onClick={() => setPanel(1)}
+            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left"
+          >
+            <i className="fa-solid fa-bars"></i>
             <span className="hidden md:block">Dashboard</span> 
           </button>
 
           {/* Book Button */}
-          <button className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
-            <i class="fa-solid fa-plus"></i>
+          <button 
+            onClick={() => setPanel(2)}
+            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
+            <i className="fa-solid fa-plus"></i>
             <span className="hidden md:block">Book</span>
           </button>
 
           {/* Insights Button */}
-          <button className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
-            <i class="fa-solid fa-chart-line"></i>
+          <button 
+            onClick={() => setPanel(3)}
+            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
+            <i className="fa-solid fa-chart-line"></i>
             <span className="hidden md:block">Insights</span>
           </button>
 
           {/* Profile Button */}
-          <button className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
-            <i class="fa-solid fa-user"></i>
+          <button 
+            onClick={() => setPanel(4)}
+            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
+            <i className="fa-solid fa-user"></i>
             <span className="hidden md:block">Profile</span>
           </button>
 
           {/* Payment Details Button */}
-          <button className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
-            <i class="fa-solid fa-coins"></i>
+          <button 
+            onClick={() => setPanel(5)}
+            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
+            <i className="fa-solid fa-coins"></i>
             <span className="hidden md:block">Payment Details</span>
           </button>
 
           {/* Notifications */}
-          <button className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
-            <i class="fa-solid fa-envelope"></i>
+          <button 
+            onClick={() => setPanel(6)}
+            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
+            <i className="fa-solid fa-envelope"></i>
             <span className="hidden md:block">Notifications</span>
           </button>
 
-          {/*logout Button */}
+          {/* Logout Button */}
           <button 
             className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left"
             onClick={handleLogout}
           >
-            <i class="fa-solid fa-sign-out"></i>
+            <i className="fa-solid fa-sign-out"></i>
             <span className="hidden md:block">Logout</span>
           </button>
-          <button onClick={()=>{
-            if(panel==1)
-              setPanel(2)
-            else
-              setPanel(1)
-          }}>wow</button>
         </nav>
       </div>
     </div>
