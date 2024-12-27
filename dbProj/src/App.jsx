@@ -12,6 +12,7 @@ import Login from './Pages/Login';
 import SignUp from './Pages/SignUp';
 import Dashboard from './Pages/Dashboard';
 import ResetPasswordPage from './Pages/ResetPasswordPage';
+import MainPage from './Pages/MainPage';
 
 function App() {
   useAuth();
@@ -25,7 +26,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/resetpassword" element={<ResetPasswordPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/main" element={<MainPage />} />
             {/* <Route path="/map" element={<MapWithUserLocation />} /> */}
           </Routes>
         </Suspense>
@@ -38,4 +39,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

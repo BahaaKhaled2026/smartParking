@@ -9,43 +9,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/parking-spots")
+@RequestMapping("/spots")
 public class ParkingSpotController {
 
     @Autowired
     private ParkingSpotService parkingSpotService;
 
-    @GetMapping("/available/{lotId}")
-    public ResponseEntity<List<ParkingSpot>> getAvailableSpots(@PathVariable int lotId) {
-        List<ParkingSpot> availableSpots = parkingSpotService.getAvailableSpots(lotId);
-        return ResponseEntity.ok(availableSpots);
-    }
-
-
-    @PostMapping("/release/{spotId}")
-    public ResponseEntity<String> releaseSpot(@PathVariable int spotId) {
+    @GetMapping("/getspots")
+    public ResponseEntity<?> getSpotsByLotId(@RequestParam("lotId") int lotId) {
         try {
-            parkingSpotService.releaseSpot(spotId);
-            return ResponseEntity.ok("Spot released successfully");
+            return ResponseEntity.ok(parkingSpotService.getSpotsByLotId(lotId));
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @PostMapping("/manager/update-status/{spotId}")
-    public ResponseEntity<String> updateSpotStatus(@PathVariable int spotId, @RequestParam String status) {
-        try {
-            parkingSpotService.updateSpotStatus(spotId, status);
-            return ResponseEntity.ok("Spot status updated successfully.");
-        } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<ParkingSpot>> searchSpotsByLocation(@RequestParam String location) {
-        List<ParkingSpot> spots = parkingSpotService.searchSpotsByLocation(location);
-        return ResponseEntity.ok(spots);
-    }
 
 }

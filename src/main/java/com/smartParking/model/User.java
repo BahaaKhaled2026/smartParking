@@ -12,12 +12,13 @@ public class User {
     private String licensePlate;
     private BigDecimal totalPenalty;
     private LocalDateTime createdAt;
+    private BigDecimal balance;
 
     public User() {
     }
 
     // Constructor, Getters, Setters, toString()
-    public User(int userId, String username, String password, String role, String email, String licensePlate,BigDecimal totalPenalty, LocalDateTime createdAt) {
+    public User(int userId, String username, String password, String role, String email, String licensePlate,BigDecimal totalPenalty , BigDecimal balance, LocalDateTime createdAt) {
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -26,15 +27,17 @@ public class User {
         this.licensePlate = licensePlate;
         this.totalPenalty = totalPenalty;
         this.createdAt = createdAt;
+        this.balance = balance;
     }
 
-    public User(String username, String password, String role, String email, BigDecimal totalPenalty, String licensePlate) {
+    public User(String username, String password, String role, String email, BigDecimal totalPenalty, String licensePlate , BigDecimal balance) {
         this.username = username;
         this.password = password;
         this.role = role;
         this.email = email;
         this.licensePlate = licensePlate;
         this.totalPenalty = totalPenalty;
+        this.balance = balance;
     }
 
     public int getUserId() {
@@ -99,5 +102,13 @@ public class User {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 }

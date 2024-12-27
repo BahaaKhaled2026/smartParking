@@ -1,9 +1,9 @@
-const Dashboard = () => {
-    return ( 
-        <div>
-            <h1>Dashboard</h1>
-        </div>
-     );
-}
+// const Dashboard = ({selected}) => {
+//     return ( 
+//         <div className={`${selected?:''}`}>
+
+//         </div>
+//      );
+// }
  
-export default Dashboard;
+// export default Dashboard;

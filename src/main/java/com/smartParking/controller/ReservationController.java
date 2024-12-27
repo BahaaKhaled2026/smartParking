@@ -16,18 +16,27 @@ public class ReservationController {
     @Autowired
     private ReservationService reservationService;
 
+
     @PostMapping("/reserve")
-    public ResponseEntity<String> reserveSpotForDuration(@RequestBody Reservation reservation) {
+    public ResponseEntity<String> reserveSpotForDuration(@RequestBody Reservation reservation , @RequestParam("reserve") boolean reserve) {
+        System.out.println("hiiii");
         try {
-            int reservationId = reservationService.createReservation(reservation);
-            return ResponseEntity.ok("Reservation created with ID: " + reservationId);
+
+            if(reserve){
+                int reservationId = (int) reservationService.createReservation(reservation , reserve);
+                return ResponseEntity.ok("Reservation created with ID: " + reservationId);
+            }
+            else{
+                BigDecimal cost = (BigDecimal) reservationService.createReservation(reservation , reserve);
+                return ResponseEntity.ok("Reservation cost is: " + cost);
+            }
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @DeleteMapping("/cancel/{reservationId}")
-    public ResponseEntity<String> cancelReservation(@PathVariable int reservationId) {
+    @DeleteMapping("/cancel")
+    public ResponseEntity<String> cancelReservation(@RequestParam("reservationId") int reservationId) {
         try {
             reservationService.cancelReservation(reservationId);
             return ResponseEntity.ok("Reservation canceled successfully");
@@ -36,8 +45,8 @@ public class ReservationController {
         }
     }
 
-    @GetMapping("/finish/{reservationId}")
-    public ResponseEntity<String> finishReservation(@PathVariable int reservationId) {
+    @GetMapping("/finish")
+    public ResponseEntity<String> finishReservation(@RequestParam("reservationId") int reservationId) {
         try {
             reservationService.finishReservation(reservationId);
             return ResponseEntity.ok("Reservation finished successfully");
@@ -46,8 +55,8 @@ public class ReservationController {
         }
     }
 
-    @GetMapping("/arrive/{reservationId}")
-    public ResponseEntity<String> arriveAtSpot(@PathVariable int reservationId) {
+    @GetMapping("/arrive")
+    public ResponseEntity<String> arriveAtSpot(@RequestParam("reservationId") int reservationId) {
         try {
             reservationService.arriveAtSpot(reservationId);
             return ResponseEntity.ok("Arrived at spot successfully");
@@ -56,8 +65,8 @@ public class ReservationController {
         }
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Reservation>> getUserReservations(@PathVariable int userId) {
+    @GetMapping("/user")
+    public ResponseEntity<List<Reservation>> getUserReservations(@RequestParam("userId") int userId) {
         List<Reservation> reservations = reservationService.getUserReservations(userId);
         return ResponseEntity.ok(reservations);
     }
