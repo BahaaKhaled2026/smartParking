@@ -12,6 +12,8 @@ import useFetch from '../Hooks/useFetch';
 import { authUsingProv, sendOtp, validateForm } from "../Utils/formUtils";
 import { useRecoilState } from 'recoil';
 import { userState, isAuthenticatedState } from '../recoil/atoms';
+import { currPanel } from "../state";
+
 
 function LoginForm() {
   const validationErrors = {};
@@ -30,6 +32,7 @@ function LoginForm() {
   const [user, setUser] = useRecoilState(userState);
   const [isAuthenticated, setIsAuthenticated] = useRecoilState(isAuthenticatedState);
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [panel, setPanel] = useRecoilState(currPanel);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -123,9 +126,11 @@ function LoginForm() {
         if (token) {
           localStorage.setItem('token', token);
           localStorage.setItem('user', JSON.stringify(response.user));
+          localStorage.setItem('notifications', JSON.stringify([]));
         }        
         const user = response.user;
         setUser(user);
+        setPanel(2);
         setIsAuthenticated(true);
         navigate('/');
         resetLoginForm();

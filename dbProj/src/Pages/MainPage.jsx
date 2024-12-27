@@ -50,6 +50,8 @@ const MainPage = () => {
               if(response && response.message) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
+                localStorage.removeItem("notifications");
+
                 navigate("/login");
                 toast.success("User signed out successfully!");
               } else {
