@@ -5,13 +5,10 @@ import com.smartParking.dao.UserDAO;
 import com.smartParking.model.ParkingSpot;
 import com.smartParking.service.ParkingSpotService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import com.smartParking.model.User;
+
 
 
 @Service
@@ -24,37 +21,7 @@ public class ParkingSpotServiceImpl implements ParkingSpotService {
     private UserDAO userDAO;
 
     @Override
-    public List<ParkingSpot> getAvailableSpots(int lotId) {
-        return parkingSpotDAO.getParkingSpotsByLotId(lotId).stream()
-                .filter(spot -> "AVAILABLE".equals(spot.getStatus()))
-                .collect(Collectors.toList());
-    }
+    public List<ParkingSpot> getSpotsByLotId(int lotId) {
+        return parkingSpotDAO.getParkingSpotsByLotId(lotId);}
 
-
-    @Override
-    @Transactional
-    public boolean releaseSpot(int spotId) {
-        ParkingSpot spot = parkingSpotDAO.getParkingSpotById(spotId)
-                .orElseThrow(() -> new IllegalStateException("Parking spot not found"));
-
-        spot.setStatus("AVAILABLE");
-        return parkingSpotDAO.updateParkingSpot(spot);
-    }
-
-    @Override
-    @Transactional
-    public boolean updateSpotStatus(int spotId, String status) {
-        ParkingSpot spot = parkingSpotDAO.getParkingSpotById(spotId)
-                .orElseThrow(() -> new IllegalStateException("Parking spot not found."));
-        if (!List.of("AVAILABLE", "RESERVED", "OCCUPIED").contains(status)) {
-            throw new IllegalStateException("Invalid status: " + status);
-        }
-        spot.setStatus(status);
-        return parkingSpotDAO.updateParkingSpot(spot);
-    }
-
-    @Override
-    public List<ParkingSpot> searchSpotsByLocation(String location) {
-        return parkingSpotDAO.findAvailableSpotsByLocation(location);
-    }
 }

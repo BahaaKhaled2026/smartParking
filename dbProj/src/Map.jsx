@@ -21,6 +21,8 @@ const blackIcon = new L.Icon({
 });
 
 function RoutingMachine({ start, end }) {
+  const [lot,setLot]=useRecoilState(chosenLot);
+
   const map = useMap();
 
   useEffect(() => {
@@ -39,7 +41,7 @@ function RoutingMachine({ start, end }) {
     }).addTo(map);
 
     return () => map.removeControl(routingControl);
-  }, [map, start, end]);
+  }, [map, start, end,lot]);
 
   return null;
 }
@@ -54,11 +56,6 @@ const MapWithUserLocation = ({mobile}) => {
     token: 'your-token-here',
     params: {}
   }, []);
-  // const destinations = [
-  //   { lotId: 1, latitude: 31.2, longitude: 30, name: 'Destination 1' },
-  //   { lotId: 2, latitude: 31.5, longitude: 30.2, name: 'Destination 2' },
-  //   { lotId: 3, latitude: 31.8, longitude: 30.4, name: 'Destination 3' },
-  // ];
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -80,7 +77,7 @@ const MapWithUserLocation = ({mobile}) => {
     }
   }, []);
 
-  if (loading) {
+  if (loading1) {
     return <div>Loading...</div>;
   }
 
@@ -121,8 +118,11 @@ const MapWithUserLocation = ({mobile}) => {
         ))}
         {userLocation && selectedDestinationId && (
           <RoutingMachine
-            start={userLocation}
-            end={destinations.find((d) => d.id === selectedDestinationId)}
+            start={{ lat: userLocation.latitude, lng: userLocation.longitude }}
+            end={{
+              lat: destinations.find((d) => d.lotId === selectedDestinationId)?.latitude,
+              lng: destinations.find((d) => d.lotId === selectedDestinationId)?.longitude,
+            }}
           />
         )}
       </MapContainer>

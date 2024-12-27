@@ -120,7 +120,7 @@ public class ReservationDAOImpl implements ReservationDAO {
         String sql = "SELECT COUNT(*) FROM reservations " +
                 "WHERE spot_id = ? AND " +
                 "(start_time < ? AND end_time > ?) AND " +
-                "status IN ('ACTIVE', 'OVER_STAY')";
+                "status  = 'ACTIVE'";
         Integer count = jdbcTemplate.queryForObject(sql, Integer.class, spotId, endTime, startTime);
         return count == 0;
     }
@@ -130,7 +130,7 @@ public class ReservationDAOImpl implements ReservationDAO {
     public List<Reservation> getExpiredReservations(LocalDateTime currentTime) {
         String sql = """
         SELECT * FROM reservations
-        WHERE end_time < ? AND status = 'ACTIVE' OR status = 'OVER_STAY'
+        WHERE end_time < ? AND status = 'ACTIVE'
     """;
         return jdbcTemplate.query(sql, reservationRowMapper, currentTime);
     }

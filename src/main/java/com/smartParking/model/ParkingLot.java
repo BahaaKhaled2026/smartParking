@@ -1,19 +1,20 @@
 package com.smartParking.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class ParkingLot {
     private int lotId;
     private String name;
-    private String longitude;
-    private String latitude;
+    private BigDecimal longitude;
+    private BigDecimal latitude;
     private int capacity;
     private LocalDateTime createdAt;
 
     public ParkingLot() {
     }
 
-    public ParkingLot(int lotId, String name, String longitude, String latitude, int capacity, LocalDateTime createdAt) {
+    public ParkingLot(int lotId, String name, BigDecimal longitude, BigDecimal latitude, int capacity, LocalDateTime createdAt) {
         this.lotId = lotId;
         this.name = name;
         this.longitude = longitude;
@@ -22,7 +23,7 @@ public class ParkingLot {
         this.createdAt = createdAt;
     }
 
-    public ParkingLot(String name, String longitude, String latitude, int capacity) {
+    public ParkingLot(String name, BigDecimal longitude, BigDecimal latitude, int capacity) {
         this.name = name;
         this.longitude = longitude;
         this.latitude = latitude;
@@ -45,19 +46,19 @@ public class ParkingLot {
         this.name = name;
     }
 
-    public String getLongitude() {
+    public BigDecimal getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(BigDecimal longitude) {
         this.longitude = longitude;
     }
 
-    public String getLatitude() {
+    public BigDecimal getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(BigDecimal latitude) {
         this.latitude = latitude;
     }
 

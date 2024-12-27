@@ -11,28 +11,40 @@ const useFetch = (url, options = {}, dependencies = []) => {
       try {
         // Construct URL with query parameters if provided
         let fetchUrl = url;
-        if (options.params && options.method === 'GET') {
+
+        if (options.params) {
           const queryParams = new URLSearchParams(options.params).toString();
           fetchUrl = `${url}?${queryParams}`;
         }
 
-        const response = await fetch(fetchUrl, {
+        // Prepare fetch options
+        const fetchOptions = {
           method: options.method || 'GET',
           headers: {
-            'Authorization': `Bearer ${options.token}`,
+            'Authorization': `Bearer ${options.token || ''}`,
             'Content-Type': 'application/json',
             ...options.headers,
           },
-          body: options.method !== 'GET' ? JSON.stringify(options.data) : null,
-        });
+        };
+
+        // Add body only if it's not a GET request
+        if (options.method && options.method !== 'GET' && options.data) {
+          fetchOptions.body = JSON.stringify(options.data);
+          console.log(options.data);
+          
+        }
+
+        // Perform the fetch request
+        const response = await fetch(fetchUrl, fetchOptions);
 
         if (!response.ok) {
           throw new Error(`Error: ${response.statusText}`);
         }
-
         const result = await response.json();
         setData(result);
       } catch (err) {
+        console.log(err);
+        
         setError(err);
       } finally {
         setLoading(false);
