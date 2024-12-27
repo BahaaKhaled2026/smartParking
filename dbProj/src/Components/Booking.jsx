@@ -9,7 +9,6 @@ import useFetch2 from '../Hooks/useFetch2';
 import { useNavigate } from 'react-router-dom';
 
 const Booking = () => {
-
   const [panel, setPanel] = useRecoilState(currPanel);
   const [lot, setLot] = useRecoilState(chosenLot);
   const [startDate, setStartDate] = useState('');
@@ -23,6 +22,8 @@ const Booking = () => {
   const [price,setPrice]=useState(0);
   const token=localStorage.getItem('token');
   const[user,setUser]=useRecoilState(currUser);
+  const[error,setError]=useState("");
+  const [closeButton,setCloseButton]=useState(true);
   const { data: parkingSpots, loading: loading1, error: error1 } = useFetch2('http://localhost:8080/spots/getspots', {
     method: 'GET',
     token: token,
@@ -30,6 +31,7 @@ const Booking = () => {
   }, [lot]);
   const navigate=useNavigate();
   useEffect(()=>{
+    
     if(!token){
         navigate('/')
     }
@@ -47,17 +49,27 @@ const Booking = () => {
             const obj = {
               userId: user.userId,
               spotId: selectedSpot.spotId,
+              spotNumber:selectedSpot.spotNumber,
               startTime,
               endTime,
               spotType: selectedSpot.type,
               status: "ACTIVE",
               cost: 0,
               penalty: 0,
+              lotId:lot.lotId,
+              lotName:lot.name
             };
+            
+            setCloseButton(false)
             setReserveObj(obj);
             let x=await reserveSpot(token, obj, false);
+            if(x.NotValid){
+              setError(x.errorMsg);
+              setCloseButton(true);
+              return
+            }
             console.log(x);
-            
+            setError("");
             setPrice(x.cost);
           } else {
             setReserveObj({});
@@ -119,6 +131,7 @@ const Booking = () => {
         </div>
 
         <h2>price: ${price}</h2>
+        <h1 className='text-red-600'>{error}</h1>
         <div className='block lg:hidden'>
           <MapWithUserLocation mobile={true} />
         </div>
@@ -175,9 +188,9 @@ const Booking = () => {
 
         <button
             onClick={reserveSubmit}
-            disabled={isBookingDisabled}
+            disabled={isBookingDisabled || closeButton}
             className={`w-full p-2 rounded ${
-                isBookingDisabled 
+                isBookingDisabled || closeButton
                 ? 'bg-gray-300 cursor-not-allowed' 
                 : 'bg-blue-500 text-white hover:bg-blue-600'
             }`}

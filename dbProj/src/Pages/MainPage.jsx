@@ -21,8 +21,10 @@ const MainPage = () => {
 
     // let navigate=useNavigate();
     useEffect(()=>{
+        console.log(token);
+        
         if(!token){
-            navigate('/')
+            navigate('/login');
         }
         else{
             setUser(JSON.parse(localStorage.getItem('user')));

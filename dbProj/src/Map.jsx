@@ -80,7 +80,7 @@ const MapWithUserLocation = ({mobile}) => {
     }
   }, []);
 
-  if (loading1) {
+  if (!destinations) {
     return <div>Loading...</div>;
   }
 

@@ -11,15 +11,18 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE,
     license_plate VARCHAR(20), -- Only for drivers
 	total_penalty DECIMAL(10, 2) DEFAULT 0.00, -- For no-show or overstay
+    balance DECIMAL(10, 2) DEFAULT 0.00,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE parking_lots (
     lot_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    longitude VARCHAR(255) NOT NULL,
-    latitude VARCHAR(255) NOT NULL,
+    longitude DECIMAL(65, 30) NOT NULL,
+    latitude DECIMAL(65, 30) NOT NULL,
     capacity INT NOT NULL, -- Total number of spots
+	total_revenue DECIMAL(10, 2) DEFAULT 0.00,
+	total_penalty DECIMAL(10, 2) DEFAULT 0.00,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -38,12 +41,19 @@ CREATE TABLE reservations (
     reservation_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     spot_id INT NOT NULL,
+    spot_number INT NOT NULL,
+    lot_id INT NOT NULL,
+    lot_name VARCHAR(100) NOT NULL,
     start_time DATETIME NOT NULL,
     end_time DATETIME NOT NULL,
-    status ENUM('ACTIVE', 'COMPLETED', 'CANCELLED' , 'NO_SHOW' , 'OVER_STAY') NOT NULL DEFAULT 'ACTIVE',
+    status ENUM('ACTIVE', 'COMPLETED', 'CANCELLED' , 'NO_SHOW') NOT NULL DEFAULT 'ACTIVE',
     penalty DECIMAL(10, 2) DEFAULT 0.00, -- For no-show or overstay
 	cost DECIMAL(10, 2) DEFAULT 0.00, 
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (spot_id) REFERENCES parking_spots(spot_id) ON DELETE CASCADE
+    FOREIGN KEY (spot_id) REFERENCES parking_spots(spot_id) ON DELETE CASCADE,
+    FOREIGN KEY (lot_id) REFERENCES parking_lots(lot_id) ON DELETE CASCADE
 );
 
+SELECT user, host, plugin FROM mysql.user WHERE user = 'root';
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'smart_city_parking';

@@ -39,7 +39,7 @@ function LoginForm() {
     const handleStorageChange = event => {
       if (event.key === 'token' && event.newValue) {
         toast.info('Another user is already logged in!');
-        navigate('/main');
+        navigate('/');
       }
     };
     window.addEventListener('storage', handleStorageChange);
@@ -127,7 +127,7 @@ function LoginForm() {
         const user = response.user;
         setUser(user);
         setIsAuthenticated(true);
-        navigate('/main');
+        navigate('/');
         resetLoginForm();
       } else {
         if (!err.status) {

@@ -1,60 +1,131 @@
-import { useState, useEffect } from 'react';
+import { useState } from "react";
 
-const useFetch = (url, options = {}, dependencies = []) => {
+function useFetch() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        // Construct URL with query parameters if provided
-        let fetchUrl = url;
-
-        if (options.params) {
-          const queryParams = new URLSearchParams(options.params).toString();
-          fetchUrl = `${url}?${queryParams}`;
-        }
-
-        // Prepare fetch options
-        const fetchOptions = {
-          method: options.method || 'GET',
-          headers: {
-            'Authorization': `Bearer ${options.token || ''}`,
-            'Content-Type': 'application/json',
-            ...options.headers,
-          },
-        };
-
-        // Add body only if it's not a GET request
-        if (options.method && options.method !== 'GET' && options.data) {
-          fetchOptions.body = JSON.stringify(options.data);
-          console.log(options.data);
-          
-        }
-
-        // Perform the fetch request
-        const response = await fetch(fetchUrl, fetchOptions);
-
-        if (!response.ok) {
-          throw new Error(`Error: ${response.statusText}`);
-        }
-        const result = await response.json();
-        setData(result);
-      } catch (err) {
-        console.log(err);
-        
-        setError(err);
-      } finally {
-        setLoading(false);
+  const fetchData = async (url, options = {}, onComplete, onError) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(url, options);
+      if (!response.ok) {
+        const errorJson = await response.json(); 
+        const error = new Error(errorJson.message || `HTTP error! Status: ${response.status}`);
+        error.status = response.status;
+        throw error;
       }
-    };
+      const contentType = response.headers.get("content-type");
+      const result = contentType && contentType.includes("application/json")
+        ? await response.json()
+        : await response.text();
+      setData(result);
+      if (onComplete) {
+        onComplete(result, null);
+      }
+    } catch (err) {
+      setError(err.message);
+      onError(err);
+      console.log(err.message);
+      if (onComplete) {
+        onComplete(null, err);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const get = (url, onComplete, onError) => {
+    fetchData(url, { method: "GET" }, onComplete, onError);
+  };
 
-    fetchData();
-  }, dependencies);
+  const postSignout = (url,token, onComplete, onError) => {
+    fetchData(
+      url,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:"Bearer "+ token.token,
+        },
+      },
+      onComplete,
+      onError
+    );
+  };
 
-  return { data, loading, error };
-};
+  const post = (url, body, onComplete, onError) => {
+    fetchData(
+      url,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      },
+      onComplete,
+      onError
+    );
+  };
+
+  const postCreate = (url, body, onComplete, onError) => {
+    fetchData(
+      url,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:"Bearer "+ body.token
+        },
+        body: JSON.stringify(body),
+      },
+      onComplete,
+      onError
+    );
+  };
+
+  const postSave = (url, body, onComplete, onError) => {
+    fetchData(
+      url,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:"Bearer "+ body.token
+        },
+        body: JSON.stringify(body),
+      },
+      onComplete,
+      onError
+    );
+  };
+
+  const deletePost = (url, body, onComplete, onError) => {
+    fetchData(
+      url, 
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:"Bearer "+ body.token
+        },
+        body: JSON.stringify(body.post),
+      }, onComplete, onError);
+  };
+
+  return { 
+    data, 
+    loading, 
+    error, 
+    get, 
+    post,
+    postSignout,
+    postCreate,
+    postSave,
+    deletePost
+  };
+}
 
 export default useFetch;

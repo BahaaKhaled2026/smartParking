@@ -12,5 +12,9 @@ export const currUser = atom({
     key: 'currUser',
     default: JSON.parse(localStorage.getItem('user')),
 });
+export const changedReservations = atom({
+  key: 'changedReservations',
+  default: false,
+});
 
 

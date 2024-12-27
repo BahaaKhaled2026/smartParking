@@ -22,6 +22,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private WebSocketNotificationService webSocketNotificationService;
 
+
     @Autowired
     private  NotificationServiceImpl notificationServiceImpl;
 
@@ -53,7 +54,11 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalStateException("Invalid username or password.");
         }
+
         notificationServiceImpl.sendNotification("User " + user.getUsername() + " logged in.");
+
+       // webSocketNotificationService.testNotify("User " + user.getUsername() + " logged in.");
+
         return new Object[] {user, jwtUtils.generateToken(email)};
     }
 
