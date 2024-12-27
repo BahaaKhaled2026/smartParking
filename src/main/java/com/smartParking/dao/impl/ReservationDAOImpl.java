@@ -31,6 +31,7 @@ public class ReservationDAOImpl implements ReservationDAO {
                     rs.getInt("reservation_id"),
                     rs.getInt("user_id"),
                     rs.getInt("spot_id"),
+                    rs.getInt("spot_number"),
                     rs.getInt("lot_id"),
                     rs.getString("lot_name"),
                     rs.getTimestamp("start_time").toLocalDateTime(),
@@ -49,20 +50,21 @@ public class ReservationDAOImpl implements ReservationDAO {
        // String lockSpotSql = "SELECT status FROM parking_spots WHERE spot_id = ? FOR UPDATE";
        // String status = jdbcTemplate.queryForObject(lockSpotSql, String.class, reservation.getSpotId());
 
-        String reservationSql = "INSERT INTO reservations (user_id, spot_id, lot_id, lot_name, start_time, end_time, status, penalty, cost) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String reservationSql = "INSERT INTO reservations (user_id, spot_id,spot_number, lot_id, lot_name, start_time, end_time, status, penalty, cost) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(reservationSql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, reservation.getUserId());
             ps.setInt(2, reservation.getSpotId());
-            ps.setInt(3, reservation.getLotId());
-            ps.setString(4, reservation.getLotName());
-            ps.setTimestamp(5, java.sql.Timestamp.valueOf(reservation.getStartTime()));
-            ps.setTimestamp(6, java.sql.Timestamp.valueOf(reservation.getEndTime()));
-            ps.setString(7, reservation.getStatus());
-            ps.setBigDecimal(8, reservation.getPenalty());
-            ps.setBigDecimal(9, reservation.getCost());
+            ps.setInt(3, reservation.getSpotNumber());
+            ps.setInt(4, reservation.getLotId());
+            ps.setString(5, reservation.getLotName());
+            ps.setTimestamp(6, java.sql.Timestamp.valueOf(reservation.getStartTime()));
+            ps.setTimestamp(7, java.sql.Timestamp.valueOf(reservation.getEndTime()));
+            ps.setString(8, reservation.getStatus());
+            ps.setBigDecimal(9, reservation.getPenalty());
+            ps.setBigDecimal(10, reservation.getCost());
             return ps;
         }, keyHolder);
 
