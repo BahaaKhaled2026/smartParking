@@ -1,5 +1,6 @@
 package com.smartParking.service.impl;
 
+import com.smartParking.WebSocketNotificationService;
 import com.smartParking.dao.UserDAO;
 import com.smartParking.model.User;
 import com.smartParking.service.UserService;
@@ -17,6 +18,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDAO userDAO;
+
+    @Autowired
+    private WebSocketNotificationService webSocketNotificationService;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -46,6 +50,7 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalStateException("Invalid username or password.");
         }
+        webSocketNotificationService.testNotify("User " + user.getUsername() + " logged in.");
         return new Object[] {user, jwtUtils.generateToken(email)};
     }
 
