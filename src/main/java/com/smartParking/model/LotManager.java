@@ -1,42 +1,30 @@
 package com.smartParking.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
-public class ParkingLot {
+public class LotManager {
     private int lotId;
-    private String name;
     private BigDecimal longitude;
     private BigDecimal latitude;
     private int capacity;
     private BigDecimal totalRevenue;
     private BigDecimal totalPenalty;
-    private LocalDateTime createdAt;
+    private int occupied ;
+    private double occupancy_rate ;
 
-    private int managerId ;
-
-    public ParkingLot() {
-    }
-
-    public ParkingLot(int lotId, String name, BigDecimal longitude, BigDecimal latitude, int capacity,BigDecimal totalRevenue,BigDecimal totalPenalty , LocalDateTime createdAt , int managerId) {
+    public LotManager(int lotId, BigDecimal longitude, BigDecimal latitude,
+                      BigDecimal totalRevenue, BigDecimal totalPenalty, int capacity, int occupied) {
         this.lotId = lotId;
-        this.name = name;
-        this.longitude = longitude;
-        this.latitude = latitude;
+        this.longitude = longitude.setScale(3, RoundingMode.DOWN);
+        this.latitude = latitude.setScale(3, RoundingMode.DOWN);
         this.capacity = capacity;
         this.totalRevenue = totalRevenue;
         this.totalPenalty = totalPenalty;
-        this.createdAt = createdAt;
-        this.managerId = managerId ;
-    }
+        this.occupied = occupied;
+        this.occupancy_rate = Math.round(((double) occupied / capacity)*100.0)/100.0 ;
 
-    public ParkingLot(String name, BigDecimal longitude, BigDecimal latitude,BigDecimal totalRevenue,BigDecimal totalPenalty , int capacity) {
-        this.name = name;
-        this.longitude = longitude;
-        this.latitude = latitude;
-        this.capacity = capacity;
-        this.totalRevenue = totalRevenue;
-        this.totalPenalty = totalPenalty;
     }
 
     public int getLotId() {
@@ -47,13 +35,6 @@ public class ParkingLot {
         this.lotId = lotId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public BigDecimal getLongitude() {
         return longitude;
@@ -79,14 +60,6 @@ public class ParkingLot {
         this.capacity = capacity;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public BigDecimal getTotalRevenue() {
         return totalRevenue;
     }
@@ -103,11 +76,19 @@ public class ParkingLot {
         this.totalPenalty = totalPenalty;
     }
 
-    public int getManagerId() {
-        return this.managerId;
+    public int getOccupied() {
+        return occupied;
     }
 
-    public void setManagerId(int managerId) {
-        this.managerId = managerId;
+    public void setOccupied(int occupied) {
+        this.occupied = occupied;
+    }
+
+    public double getOccupancy_rate() {
+        return occupancy_rate;
+    }
+
+    public void setOccupancy_rate(double occupancy_rate) {
+        this.occupancy_rate = occupancy_rate;
     }
 }

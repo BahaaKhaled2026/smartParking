@@ -36,14 +36,15 @@ public class ParkingLotDAOImpl implements ParkingLotDAO {
                     rs.getInt("capacity"),
                     rs.getBigDecimal("total_revenue"),
                     rs.getBigDecimal("total_penalty"),
-                    rs.getTimestamp("created_at").toLocalDateTime()
+                    rs.getTimestamp("created_at").toLocalDateTime() ,
+                    rs.getInt("manager_id")
             );
         }
     };
 
     @Override
     public int createParkingLot(ParkingLot parkingLot) {
-        String sql = "INSERT INTO parking_lots (name, longitude, latitude, capacity, total_revenue, total_penalty) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO parking_lots (name, longitude, latitude, capacity, total_revenue, total_penalty , manager_id) VALUES (?, ?, ?, ?, ?, ? , ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
@@ -54,6 +55,7 @@ public class ParkingLotDAOImpl implements ParkingLotDAO {
             ps.setInt(4, parkingLot.getCapacity());
             ps.setBigDecimal(5, parkingLot.getTotalRevenue());
             ps.setBigDecimal(6, parkingLot.getTotalPenalty());
+            ps.setInt(7, parkingLot.getManagerId());
             return ps;
         }, keyHolder);
 
@@ -97,5 +99,11 @@ public class ParkingLotDAOImpl implements ParkingLotDAO {
     public void updateTotalPenalty(int lotId, BigDecimal penalty) {
         String sql = "UPDATE parking_lots SET total_penalty = total_penalty + ? WHERE lot_id = ?";
         jdbcTemplate.update(sql, penalty, lotId);
+    }
+
+    @Override
+    public List<ParkingLot> getAllLotsOrderedByRevenue(){
+        String sql = "SELECT * FROM parking_lots Order By total_revenue DESC" ;
+        return jdbcTemplate.query(sql,parkingLotRowMapper) ;
     }
 }
