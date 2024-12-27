@@ -31,7 +31,7 @@ public class ReservationDAOImpl implements ReservationDAO {
                     rs.getInt("reservation_id"),
                     rs.getInt("user_id"),
                     rs.getInt("spot_id"),
-                    rs.getInt("spot_number"),
+                    rs.getString("spot_number"),
                     rs.getInt("lot_id"),
                     rs.getString("lot_name"),
                     rs.getTimestamp("start_time").toLocalDateTime(),
@@ -57,7 +57,7 @@ public class ReservationDAOImpl implements ReservationDAO {
             PreparedStatement ps = connection.prepareStatement(reservationSql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, reservation.getUserId());
             ps.setInt(2, reservation.getSpotId());
-            ps.setInt(3, reservation.getSpotNumber());
+            ps.setString(3, reservation.getSpotNumber());
             ps.setInt(4, reservation.getLotId());
             ps.setString(5, reservation.getLotName());
             ps.setTimestamp(6, java.sql.Timestamp.valueOf(reservation.getStartTime()));

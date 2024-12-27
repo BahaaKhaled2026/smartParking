@@ -48,6 +48,7 @@ const Booking = () => {
             const obj = {
               userId: user.userId,
               spotId: selectedSpot.spotId,
+              spotNumber:selectedSpot.spotNumber,
               startTime,
               endTime,
               spotType: selectedSpot.type,

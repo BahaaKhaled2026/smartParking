@@ -7,7 +7,7 @@ public class Reservation {
     private int reservationId;
     private int userId;
     private int spotId;
-    private int spotNumber;
+    private String spotNumber;
     private int lotId;
     private String lotName;
     private LocalDateTime startTime;
@@ -19,7 +19,7 @@ public class Reservation {
 
 
     // Constructors
-    public Reservation(int reservationId, int userId, int spotId, int spotNumber,int lotId, String lotName, LocalDateTime startTime, LocalDateTime endTime, String status, BigDecimal penalty, BigDecimal cost) {
+    public Reservation(int reservationId, int userId, int spotId, String spotNumber,int lotId, String lotName, LocalDateTime startTime, LocalDateTime endTime, String status, BigDecimal penalty, BigDecimal cost) {
         this.reservationId = reservationId;
         this.userId = userId;
         this.spotId = spotId;
@@ -33,7 +33,7 @@ public class Reservation {
         this.cost = cost;
     }
 
-    public Reservation(int userId, int spotId, int spotNumber,int lotId, String lotName,LocalDateTime startTime, LocalDateTime endTime, String status, BigDecimal penalty, BigDecimal cost) {
+    public Reservation(int userId, int spotId, String spotNumber,int lotId, String lotName,LocalDateTime startTime, LocalDateTime endTime, String status, BigDecimal penalty, BigDecimal cost) {
         this.userId = userId;
         this.spotId = spotId;
         this.spotNumber = spotNumber;
@@ -73,11 +73,11 @@ public class Reservation {
         this.spotId = spotId;
     }
 
-    public int getSpotNumber() {
+    public String getSpotNumber() {
         return spotNumber;
     }
 
-    public void setSpotNumber(int spotNumber) {
+    public void setSpotNumber(String spotNumber) {
         this.spotNumber = spotNumber;
     }
 

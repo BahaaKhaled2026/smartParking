@@ -106,7 +106,7 @@ const SignupForm = () => {
                         setIsAuthenticated(true);
                         toast.success("Sign up successful");
                         console.log("Sign up successful");
-                        navigate("/main");
+                        navigate("/");
                     },
                     ()=>{
                         window.scrollTo({

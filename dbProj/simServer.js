@@ -11,26 +11,7 @@ const BASE_URL = 'http://localhost:8080';
 let activeReservations = [];
 let token = 'server';
 
-// Helper function to retrieve the token
-const fetchToken = async () => {
-  try {
-    const response = await fetch(`${BASE_URL}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: user.username,
-        password: user.password,
-      }),
-    });
 
-    if (!response.ok) throw new Error('Failed to fetch token');
-    const data = await response.json();
-    token = data.token;
-    console.log('Token fetched successfully:', token);
-  } catch (error) {
-    console.error('Error fetching token:', error);
-  }
-};
 
 // Helper function to construct query parameters
 const constructQueryParams = (params) =>
@@ -96,9 +77,12 @@ const reserveSpot = async (spot) => {
     status: 'ACTIVE',
     cost: 0,
     penalty: 0,
+    spotNumber: spot.spotNumber,
     lotId:spot.lotId,
     lotName:"serverRes"
   };
+  console.log(obj);
+  
   console.log(`${BASE_URL}/reservations/reserve?reserve=true`);
   
 
@@ -160,7 +144,7 @@ const main = async () => {
     const randomSpot = spots[Math.floor(Math.random() * spots.length)];
     
     await reserveSpot(randomSpot);
-  }, Math.random() * 5000 + 5000); // Random interval between 5-10 seconds
+  }, Math.random() * 5000 + 2000); // Random interval between 5-10 seconds
 
   // Periodically cancel reservations
   setInterval(async () => {

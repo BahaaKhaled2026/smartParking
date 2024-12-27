@@ -33,9 +33,9 @@ export async function reserveSpot(token, reservation, reserve) {
       throw error;
     }
 }
-export const cancelReservation = async (reservationId) => {
+export const cancelReservation = async (reservationId,token) => {
   try {
-    const url = `${BASE_URL}/reservations/cancel?reservationId=${reservationId}`;
+    const url = `http://localhost:8080/reservations/cancel?reservationId=${reservationId}`;
     console.log(url);
 
     const response = await fetch(url, {
@@ -46,9 +46,9 @@ export const cancelReservation = async (reservationId) => {
     });
 
     if (!response.ok) throw new Error('Failed to cancel reservation');
-    activeReservations = activeReservations.filter((id) => id !== reservationId);
     console.log(`Cancelled reservation ${reservationId} successfully!`);
   } catch (error) {
+    window.alert(error)
     console.error('Error cancelling reservation:', error);
   }
 };
@@ -81,4 +81,22 @@ export async function getReservation(token, uID) {
       throw error;
     }
 }
+export const arriveReservation = async (reservationId,token) => {
+  try {
+    const url = `http://localhost:8080/reservations/arrive?reservationId=${reservationId}`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    
+    if (!response.ok) throw new Error('Failed to arrive reservation');
+    console.log(`Cancelled reservation ${reservationId} successfully!`);
+  } catch (error) {
+    window.alert(error)
+    console.error('Error cancelling reservation:', error);
+  }
+};
   

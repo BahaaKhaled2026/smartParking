@@ -106,12 +106,14 @@ public class ReservationServiceImpl implements ReservationService {
         parkingSpotDAO.updateParkingSpot(spot);
 
         reservation.setStatus("CANCELLED");
+        BigDecimal penalty = reservation.getCost().multiply(PENALTY_RATE);
+        reservation.setPenalty(penalty);
         reservationDAO.updateReservation(reservation);
+
 
         User user = userDAO.getUserById(reservation.getUserId())
                 .orElseThrow(() -> new IllegalStateException("User not found."));
         user.setBalance(user.getBalance().add(reservation.getCost()));
-        BigDecimal penalty = reservation.getCost().multiply(PENALTY_RATE);
         user.setTotalPenalty(user.getTotalPenalty().add(penalty));
         notificationService.notifyPenalty(reservation.getReservationId(), "You have been charged a penalty of $" + penalty + " for cancelling your reservation.");
         userDAO.updateUser(user);
@@ -120,7 +122,6 @@ public class ReservationServiceImpl implements ReservationService {
         parkingLotDAO.updateTotalRevenue(lotId, reservation.getCost().multiply(BigDecimal.valueOf(-1)));
         parkingLotDAO.updateTotalPenalty(lotId, penalty);
         parkingSpotDAO.updateParkingSpot(spot);
-
         return true;
     }
 
@@ -267,6 +268,10 @@ public class ReservationServiceImpl implements ReservationService {
 
         ParkingSpot spot = parkingSpotDAO.getParkingSpotById(reservation.getSpotId())
                 .orElseThrow(() -> new IllegalStateException("Parking spot not found"));
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isBefore(reservation.getStartTime())) {
+            throw new IllegalStateException("You cannot arrive before the reservation start time.");
+        }
         spot.setStatus("OCCUPIED");
         parkingSpotDAO.updateParkingSpot(spot);
     }
