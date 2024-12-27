@@ -20,4 +20,9 @@ public class WebSocketNotificationService {
         messagingTemplate.convertAndSend("/topic/tenMinuteLeft",
                 new NotificationMessage(reservationId, message));
     }
+
+    public void testNotify(String message) {
+        messagingTemplate.convertAndSend("/topic/test",
+                new NotificationMessage(0, message));
+    }
 }

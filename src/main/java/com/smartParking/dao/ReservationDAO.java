@@ -18,5 +18,5 @@ public interface ReservationDAO {
     List<Reservation> getStartedReservations(LocalDateTime currentTime);
     List<Reservation> getReservationsByStatus(String status);
     List<Reservation> getReservationsBySpotStatus(String status);
-
+    List<Reservation> getReservationsByLotId(int lotId);
 }

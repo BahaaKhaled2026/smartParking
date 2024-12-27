@@ -7,19 +7,23 @@ public class Reservation {
     private int reservationId;
     private int userId;
     private int spotId;
+    private int lotId;
+    private String lotName;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private String status; // ACTIVE, COMPLETED, CANCELLED, OVER_STAY, NO_SHOW
+    private String status;
     private BigDecimal penalty;
     private BigDecimal cost;
 
 
 
     // Constructors
-    public Reservation(int reservationId, int userId, int spotId, LocalDateTime startTime, LocalDateTime endTime, String status, BigDecimal penalty, BigDecimal cost) {
+    public Reservation(int reservationId, int userId, int spotId, int lotId, String lotName, LocalDateTime startTime, LocalDateTime endTime, String status, BigDecimal penalty, BigDecimal cost) {
         this.reservationId = reservationId;
         this.userId = userId;
         this.spotId = spotId;
+        this.lotId = lotId;
+        this.lotName = lotName;
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
@@ -27,9 +31,11 @@ public class Reservation {
         this.cost = cost;
     }
 
-    public Reservation(int userId, int spotId, LocalDateTime startTime, LocalDateTime endTime, String status, BigDecimal penalty, BigDecimal cost) {
+    public Reservation(int userId, int spotId, int lotId, String lotName,LocalDateTime startTime, LocalDateTime endTime, String status, BigDecimal penalty, BigDecimal cost) {
         this.userId = userId;
         this.spotId = spotId;
+        this.lotId = lotId;
+        this.lotName = lotName;
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
@@ -62,6 +68,22 @@ public class Reservation {
 
     public void setSpotId(int spotId) {
         this.spotId = spotId;
+    }
+
+    public int getLotId() {
+        return lotId;
+    }
+
+    public void setLotId(int lotId) {
+        this.lotId = lotId;
+    }
+
+    public String getLotName() {
+        return lotName;
+    }
+
+    public void setLotName(String lotName) {
+        this.lotName = lotName;
     }
 
     public LocalDateTime getStartTime() {

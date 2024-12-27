@@ -31,6 +31,8 @@ public class ReservationDAOImpl implements ReservationDAO {
                     rs.getInt("reservation_id"),
                     rs.getInt("user_id"),
                     rs.getInt("spot_id"),
+                    rs.getInt("lot_id"),
+                    rs.getString("lot_name"),
                     rs.getTimestamp("start_time").toLocalDateTime(),
                     rs.getTimestamp("end_time").toLocalDateTime(),
                     rs.getString("status"),
@@ -47,18 +49,20 @@ public class ReservationDAOImpl implements ReservationDAO {
        // String lockSpotSql = "SELECT status FROM parking_spots WHERE spot_id = ? FOR UPDATE";
        // String status = jdbcTemplate.queryForObject(lockSpotSql, String.class, reservation.getSpotId());
 
-        String reservationSql = "INSERT INTO reservations (user_id, spot_id, start_time, end_time, status, penalty, cost) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String reservationSql = "INSERT INTO reservations (user_id, spot_id, lot_id, lot_name, start_time, end_time, status, penalty, cost) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(reservationSql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, reservation.getUserId());
             ps.setInt(2, reservation.getSpotId());
-            ps.setTimestamp(3, java.sql.Timestamp.valueOf(reservation.getStartTime()));
-            ps.setTimestamp(4, java.sql.Timestamp.valueOf(reservation.getEndTime()));
-            ps.setString(5, reservation.getStatus());
-            ps.setBigDecimal(6, reservation.getPenalty());
-            ps.setBigDecimal(7, reservation.getCost());
+            ps.setInt(3, reservation.getLotId());
+            ps.setString(4, reservation.getLotName());
+            ps.setTimestamp(5, java.sql.Timestamp.valueOf(reservation.getStartTime()));
+            ps.setTimestamp(6, java.sql.Timestamp.valueOf(reservation.getEndTime()));
+            ps.setString(7, reservation.getStatus());
+            ps.setBigDecimal(8, reservation.getPenalty());
+            ps.setBigDecimal(9, reservation.getCost());
             return ps;
         }, keyHolder);
 
@@ -159,5 +163,14 @@ public class ReservationDAOImpl implements ReservationDAO {
         WHERE start_time < ? AND status = 'ACTIVE'
     """;
         return jdbcTemplate.query(sql, reservationRowMapper, currentTime);
+    }
+
+    @Override
+    public List<Reservation> getReservationsByLotId(int lotId) {
+        String sql = """
+        SELECT * FROM reservations
+        WHERE lot_id = ?
+    """;
+        return jdbcTemplate.query(sql, reservationRowMapper, lotId);
     }
 }
