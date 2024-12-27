@@ -92,8 +92,11 @@ public class ReservationDAOImpl implements ReservationDAO {
     @Override
     @Transactional
     public boolean updateReservation(Reservation reservation) {
-        String sql = "UPDATE reservations SET start_time = ?, end_time = ?, status = ?, penalty = ?, cost = ? WHERE reservation_id = ?";
-        return jdbcTemplate.update(sql,
+        String selectSql = "SELECT reservation_id FROM reservations WHERE reservation_id = ? FOR UPDATE";
+        jdbcTemplate.queryForObject(selectSql, Integer.class, reservation.getReservationId());
+
+        String updateSql = "UPDATE reservations SET start_time = ?, end_time = ?, status = ?, penalty = ?, cost = ? WHERE reservation_id = ?";
+        return jdbcTemplate.update(updateSql,
                 java.sql.Timestamp.valueOf(reservation.getStartTime()),
                 java.sql.Timestamp.valueOf(reservation.getEndTime()),
                 reservation.getStatus(),
@@ -101,6 +104,7 @@ public class ReservationDAOImpl implements ReservationDAO {
                 reservation.getCost(),
                 reservation.getReservationId()) > 0;
     }
+
 
     @Override
     @Transactional

@@ -65,7 +65,8 @@ const fetchSpots = async (lotId) => {
   try {
     const queryParams = constructQueryParams({ lotId });
     const url = `${BASE_URL}/spots/getspots?${queryParams}`;
-
+    console.log(url);
+    
     const response = await fetch(url, {
       method: 'GET',
       headers: {
@@ -76,7 +77,8 @@ const fetchSpots = async (lotId) => {
 
     if (!response.ok) throw new Error('Failed to fetch spots');
     const spots = await response.json();
-    return spots.filter((spot) => spot.status === 'ACTIVE'); // Filter spots with status 'ACTIVE'
+    
+    return spots.filter((spot) => spot.status === 'AVAILABLE'); // Filter spots with status 'ACTIVE'
   } catch (error) {
     console.error(`Error fetching spots for lot ${lotId}:`, error);
     return [];
@@ -88,8 +90,8 @@ const reserveSpot = async (spot) => {
   const obj = {
     userId: user.id,
     spotId: spot.spotId,
-    startTime: new Date().toISOString(),
-    endTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(), // 1 hour later
+    startTime : new Date(Date.now() + 60 * 60 * 1000*5).toISOString(),
+    endTime: new Date(Date.now() + 60 * 60 * 1000*7).toISOString(),
     spotType: spot.type,
     status: 'ACTIVE',
     cost: 0,
@@ -97,20 +99,23 @@ const reserveSpot = async (spot) => {
     lotId:spot.lotId,
     lotName:"serverRes"
   };
+  console.log(`${BASE_URL}/reservations/reserve?reserve=true`);
+  
 
   try {
     const response = await fetch(`${BASE_URL}/reservations/reserve?reserve=true`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
       },
       body: JSON.stringify(obj),
     });
-
+    
     if (!response.ok) throw new Error('Failed to reserve spot');
     const reservation = await response.json();
-    activeReservations.push(reservation.id);
+    
+    activeReservations.push(reservation.reservationId);
     console.log(`Reserved spot ${spot.spotId} successfully!`);
   } catch (error) {
     console.error('Error reserving spot:', error);
@@ -121,10 +126,12 @@ const reserveSpot = async (spot) => {
 const cancelReservation = async (reservationId) => {
   try {
     const url = `${BASE_URL}/reservations/cancel?reservationId=${reservationId}`;
+    console.log(url);
+
     const response = await fetch(url, {
-      method: 'POST',
+      method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${token}`,
+        'Authorization': `Bearer ${token}`,
       },
     });
 
@@ -138,30 +145,28 @@ const cancelReservation = async (reservationId) => {
 
 // Main function to periodically reserve and cancel
 const main = async () => {
-  await fetchToken(); // Fetch the token before making API requests
 
-  if (!token) {
-    console.error('Token not available. Exiting script.');
-    return;
-  }
-
+ 
   // Periodically reserve spots
   setInterval(async () => {
     const lots = await fetchLots();
+    
     if (lots.length === 0) return;
-
+    
     const randomLot = lots[Math.floor(Math.random() * lots.length)];
     const spots = await fetchSpots(randomLot.lotId);
     if (spots.length === 0) return;
-
+    
     const randomSpot = spots[Math.floor(Math.random() * spots.length)];
+    
     await reserveSpot(randomSpot);
   }, Math.random() * 5000 + 5000); // Random interval between 5-10 seconds
 
   // Periodically cancel reservations
   setInterval(async () => {
     if (activeReservations.length === 0) return;
-
+    console.log(activeReservations);
+    
     const randomReservation = activeReservations[Math.floor(Math.random() * activeReservations.length)];
     await cancelReservation(randomReservation);
   }, Math.random() * 7000 + 7000); // Random interval between 7-14 seconds
