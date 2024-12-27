@@ -12,8 +12,10 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+    "@stomp/stompjs": "^7.0.0",
     "dbproj": "file:",
     "firebase": "^11.1.0",
+    "global": "^4.4.0",
     "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "leaflet-routing-machine": "^3.2.12",
@@ -24,7 +26,8 @@
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^7.1.1",
     "react-toastify": "^11.0.2",
-    "recoil": "^0.7.7"
+    "recoil": "^0.7.7",
+    "sockjs-client": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
