@@ -14,6 +14,6 @@ public interface ParkingLotDAO {
     boolean deleteParkingLot(int lotId);
     void updateTotalRevenue(int lotId, BigDecimal cost);
     void updateTotalPenalty(int lotId, BigDecimal penalty);
-
+    List<ParkingLot> getParkingLotsByManagerId(int managerId);
     List<ParkingLot> getAllLotsOrderedByRevenue() ;
 }

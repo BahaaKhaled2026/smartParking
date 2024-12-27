@@ -106,4 +106,10 @@ public class ParkingLotDAOImpl implements ParkingLotDAO {
         String sql = "SELECT * FROM parking_lots Order By total_revenue DESC" ;
         return jdbcTemplate.query(sql,parkingLotRowMapper) ;
     }
+
+    @Override
+    public List<ParkingLot> getParkingLotsByManagerId(int managerId) {
+        String sql = "SELECT * FROM parking_lots WHERE manager_id = ?";
+        return jdbcTemplate.query(sql, parkingLotRowMapper, managerId);
+    }
 }

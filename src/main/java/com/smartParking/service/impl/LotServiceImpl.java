@@ -18,4 +18,9 @@ public class LotServiceImpl implements LotService {
     public List<ParkingLot> getAllLots() {
         return parkingLotDAO.getAllParkingLots();
     }
+
+    @Override
+    public List<ParkingLot> getLotsByManagerId(int managerId) {
+        return parkingLotDAO.getParkingLotsByManagerId(managerId);
+    }
 }

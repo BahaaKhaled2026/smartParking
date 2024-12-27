@@ -12,7 +12,6 @@ public class ParkingLot {
     private BigDecimal totalRevenue;
     private BigDecimal totalPenalty;
     private LocalDateTime createdAt;
-
     private int managerId ;
 
     public ParkingLot() {

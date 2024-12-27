@@ -24,7 +24,7 @@ CREATE TABLE parking_lots (
 	total_revenue DECIMAL(10, 2) DEFAULT 0.00,
 	total_penalty DECIMAL(10, 2) DEFAULT 0.00,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ,
-    manger_id INT ,
+    manager_id INT ,
     FOREIGN KEY (manager_id) REFERENCES users(user_id) ON DELETE SET NULL
 );
 
