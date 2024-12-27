@@ -21,8 +21,8 @@ const Dashboard = () => {
     },[change]);
     return ( 
         <div className={`${panel === 1 ? 'w-full lg:w-[40%]' : 'w-0'}`}>
-            {reservations.map((reservation)=>(
-                <ReservationCard spotNumber={reservation.spotNumber} name={reservation.lotName} cost={reservation.cost} userId={reservation.userId} penalty={reservation.penalty} status={reservation.status} startTime={reservation.startTime} endTime={reservation.endTime} spotId={reservation.spotId} reservationId={reservation.reservationId} />
+            {reservations.map((reservation,index)=>(
+                <ReservationCard key = {index} spotNumber={reservation.spotNumber} name={reservation.lotName} cost={reservation.cost} userId={reservation.userId} penalty={reservation.penalty} status={reservation.status} startTime={reservation.startTime} endTime={reservation.endTime} spotId={reservation.spotId} reservationId={reservation.reservationId} />
             ))}
         </div>
      );

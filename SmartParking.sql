@@ -41,7 +41,7 @@ CREATE TABLE reservations (
     reservation_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     spot_id INT NOT NULL,
-    spot_number INT NOT NULL,
+    spot_number VARCHAR(10) NOT NULL,
     lot_id INT NOT NULL,
     lot_name VARCHAR(100) NOT NULL,
     start_time DATETIME NOT NULL,
@@ -57,3 +57,4 @@ CREATE TABLE reservations (
 SELECT user, host, plugin FROM mysql.user WHERE user = 'root';
 
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'smart_city_parking';
+FLUSH PRIVILEGES;

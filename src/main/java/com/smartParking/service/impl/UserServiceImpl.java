@@ -55,8 +55,6 @@ public class UserServiceImpl implements UserService {
             throw new IllegalStateException("Invalid username or password.");
         }
 
-        notificationServiceImpl.sendNotification("User " + user.getUsername() + " logged in.");
-
        // webSocketNotificationService.testNotify("User " + user.getUsername() + " logged in.");
 
         return new Object[] {user, jwtUtils.generateToken(email)};
