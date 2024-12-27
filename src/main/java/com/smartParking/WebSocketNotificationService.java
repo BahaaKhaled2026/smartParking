@@ -19,10 +19,6 @@ public class WebSocketNotificationService {
 
     }
 
-    public void testNotify(String message) {
-        messagingTemplate.convertAndSend("/topic/test", new NotificationMessage(0, message));
-
-    }
 
     public void testNotify(String message) {
         System.out.println("hiii: " + message);

@@ -14,7 +14,6 @@ public class WebSocketController {
         return new NotificationMessage(message.getReservationId(), "Test Message: " + message.getMessage());
     }
 
-}
 
     @MessageMapping("/sendPenalty")
     @SendTo("/topic/penalties")
