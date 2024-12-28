@@ -1,11 +1,16 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React from "react";
-import { currPanel } from "../state";
+import { currPanel, currUser } from "../state";
 import { useRecoilState } from "recoil";
 
 export function DashboardSidebar({ className, handleLogout }) {
   const [panel, setPanel] = useRecoilState(currPanel);
+  const [user, setUser] = useRecoilState(currUser);
+
+  // console.log(user.role);
+
+
   
   return (
     <div
@@ -18,8 +23,9 @@ export function DashboardSidebar({ className, handleLogout }) {
           </h2>
         </div>
         <nav className="space-y-1">
-          {/* Dashboard Button */}
-          <button 
+          {user.role === "DRIVER" ?(
+              <>
+               <button 
             onClick={() => setPanel(1)}
             className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left"
           >
@@ -27,23 +33,49 @@ export function DashboardSidebar({ className, handleLogout }) {
             <span className="hidden md:block">Dashboard</span> 
           </button>
 
-          {/* Book Button */}
           <button 
             onClick={() => setPanel(2)}
             className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
             <i className="fa-solid fa-plus"></i>
             <span className="hidden md:block">Book</span>
           </button>
+              </>
+            ): user.role === "MANAGER" ? (
+              <>
+                        <button 
+            onClick={() => setPanel(3)}
+            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
+            <i className="fa-solid fa-chart-line"></i>
+            <span className="hidden md:block">Insights</span>
+          </button>
+              </>
+            ): 
+            (
+              <>
+                             <button 
+            onClick={() => setPanel(1)}
+            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left"
+          >
+            <i className="fa-solid fa-bars"></i>
+            <span className="hidden md:block">Dashboard</span> 
+          </button>
 
-          {/* Insights Button */}
+          <button 
+            onClick={() => setPanel(2)}
+            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
+            <i className="fa-solid fa-plus"></i>
+            <span className="hidden md:block">Book</span>
+          </button>
           <button 
             onClick={() => setPanel(3)}
             className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
             <i className="fa-solid fa-chart-line"></i>
             <span className="hidden md:block">Insights</span>
           </button>
-
-          {/* Profile Button */}
+              
+              </>
+            )
+          }
           <button 
             onClick={() => setPanel(4)}
             className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
@@ -51,7 +83,6 @@ export function DashboardSidebar({ className, handleLogout }) {
             <span className="hidden md:block">Profile</span>
           </button>
 
-          {/* Payment Details Button */}
           <button 
             onClick={() => setPanel(5)}
             className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
@@ -59,7 +90,6 @@ export function DashboardSidebar({ className, handleLogout }) {
             <span className="hidden md:block">Payment Details</span>
           </button>
 
-          {/* Notifications */}
           <button 
             onClick={() => setPanel(6)}
             className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
@@ -67,7 +97,6 @@ export function DashboardSidebar({ className, handleLogout }) {
             <span className="hidden md:block">Notifications</span>
           </button>
 
-          {/* Logout Button */}
           <button 
             className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left"
             onClick={handleLogout}

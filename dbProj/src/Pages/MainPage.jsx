@@ -11,6 +11,7 @@ import WebSocketComponent from "../Components/WebSocketComponent";
 import useFetch from '../Hooks/useFetch';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Insights from "../Components/Insights";
 
 const MainPage = () => {
     const token=localStorage.getItem('token');
@@ -70,6 +71,7 @@ const MainPage = () => {
             {panel==2&&<Booking/>}
             {panel==1&&<Dashboard/>}
             {panel==6&&<WebSocketComponent/>}
+            {panel==3&&<Insights/>}
             <div className="hidden lg:block w-[60%]">
                 <MapWithUserLocation mobile={false}/>
             </div>

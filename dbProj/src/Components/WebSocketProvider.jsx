@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { createContext, useContext, useEffect, useRef } from 'react';
 import { currUser } from "../state";

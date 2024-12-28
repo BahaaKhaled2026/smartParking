@@ -17,4 +17,10 @@ export const changedReservations = atom({
   default: false,
 });
 
+export const changedLots = atom({
+  key: 'changedLots',
+  default: false,
+});
+
+
 

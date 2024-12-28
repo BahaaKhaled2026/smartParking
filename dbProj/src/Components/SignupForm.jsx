@@ -8,6 +8,8 @@ import { useRecoilState } from "recoil";
 import SignUpHeader from "./SignupHeader";
 import ContinueSep from "./ContinueSep";
 import { toast } from "react-toastify";
+import { currPanel } from "../state";
+
 
 const SignupForm = () => {
     const {error,post}=useFetch();
@@ -20,6 +22,7 @@ const SignupForm = () => {
     const [errors, setErrors] = useState({});
     const [user, setUser] = useRecoilState(userState);
     const [isAuthenticated, setIsAuthenticated] = useRecoilState(isAuthenticatedState);
+    const [panel, setPanel] = useRecoilState(currPanel);
 
     let otpRef=useRef(null);
 
@@ -104,6 +107,11 @@ const SignupForm = () => {
                         localStorage.setItem("user",JSON.stringify(res.user));
                         setUser(res.user);
                         setIsAuthenticated(true);
+                        if (user.role === "DRIVER")
+                            setPanel(2);
+                          else if (user.role === "MANAGER")
+                            setPanel(3);
+                        
                         toast.success("Sign up successful");
                         console.log("Sign up successful");
                         navigate("/");
@@ -227,7 +235,9 @@ const SignupForm = () => {
                         </option>
                     </select>
                 </div>
-                <div className="w-full">
+                {
+                    formData.role==="DRIVER"&&(
+                        <div className="w-full">
                     <h3 className="emailLabel mb-2">License Plate</h3>
                     <input
                     placeholder="Enter license plate"
@@ -238,6 +248,9 @@ const SignupForm = () => {
                     className={`email-input text-gray-400 w-full border-2 rounded-lg h-8 text-sm p-2 ${errors.licensePlate ? "border-red-500" : ""}`}
                     />
                 </div>
+                    )
+                }
+                
                 <div className="">
                     <h3 className="emailLabel mb-2">
                         Email

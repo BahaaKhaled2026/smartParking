@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useRecoilState } from "recoil";
 import { changedReservations, currPanel, currUser } from "../state";
 import { useEffect, useState } from "react";

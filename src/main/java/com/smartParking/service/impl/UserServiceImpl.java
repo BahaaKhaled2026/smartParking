@@ -51,13 +51,9 @@ public class UserServiceImpl implements UserService {
     public Object[] login(String email, String password) {
         User user = userDAO.getUserByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("Invalid username or password."));
-        // !passwordEncoder.matches(password, user.getPassword())
-        if (!password.equals(user.getPassword())) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalStateException("Invalid username or password.");
         }
-
-       // webSocketNotificationService.testNotify("User " + user.getUsername() + " logged in.");
-
         return new Object[] {user, jwtUtils.generateToken(email)};
     }
 

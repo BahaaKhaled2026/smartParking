@@ -121,6 +121,8 @@ function LoginForm() {
 
   const callBackend = () => {
     post('http://localhost:8080/users/login', { email, password }, (response, err) => {
+      console.log(err);
+      console.log(response);
       if (response) {
         const token = response.token;
         if (token) {
@@ -130,7 +132,10 @@ function LoginForm() {
         }        
         const user = response.user;
         setUser(user);
-        setPanel(2);
+        if (user.role === "DRIVER")
+          setPanel(2);
+        else if (user.role === "MANAGER")
+          setPanel(3);
         setIsAuthenticated(true);
         navigate('/');
         resetLoginForm();

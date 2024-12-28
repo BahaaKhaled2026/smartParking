@@ -13,7 +13,7 @@ public class parkingLotController {
     private LotService lotService;
 
     @GetMapping("/getlots")
-    public ResponseEntity<?> getLots() {
+    public ResponseEntity<?> getManagerLots() {
         try {
             return ResponseEntity.ok(lotService.getAllLots());
         } catch (IllegalStateException e) {
@@ -21,8 +21,8 @@ public class parkingLotController {
         }
     }
 
-    @GetMapping("/getlots")
-    public ResponseEntity<?> getLots(@RequestParam("managerId") int managerId) {
+    @GetMapping("/getmanagerlots")
+    public ResponseEntity<?> getManagerLots(@RequestParam("managerId") int managerId) {
         try {
             return ResponseEntity.ok(lotService.getLotsByManagerId(managerId));
         } catch (IllegalStateException e) {
