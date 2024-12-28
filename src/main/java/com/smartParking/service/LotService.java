@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface LotService {
     List<ParkingLot> getAllLots();
+    List<ParkingLot> getLotsByManagerId(int managerId);
 }

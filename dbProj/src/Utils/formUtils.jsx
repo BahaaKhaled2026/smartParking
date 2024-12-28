@@ -23,9 +23,9 @@ export const validateForm = (formData) => {
   } else if (!/[^a-zA-Z0-9]/.test(formData.password)) {
       newErrors.password = "Password must contain at least one special character";
   }
-  if (!formData.licensePlate.trim()) {
+  if (!formData.licensePlate.trim()&& formData.role=== "DRIVER") {
     newErrors.licensePlate = "License plate is required";
-} else if (!/^[A-Z]{2}[0-9]{2}\s?[A-Z]{3}$/.test(formData.licensePlate)) {
+} else if (!/^[A-Z]{2}[0-9]{2}\s?[A-Z]{3}$/.test(formData.licensePlate) && formData.role=== "DRIVER") {
     newErrors.licensePlate = "License plate is invalid";
 }
     return { valid: Object.keys(newErrors).length === 0, errors: newErrors };

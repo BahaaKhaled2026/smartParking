@@ -1,6 +1,8 @@
 package com.smartParking.service;
 
 import com.smartParking.model.User;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface UserService {
@@ -13,4 +15,6 @@ public interface UserService {
     public void signOut(); // Sign out a user
 
     boolean forgetPassword(String email, String password);
+
+    User addBalance(BigDecimal amount);
 }

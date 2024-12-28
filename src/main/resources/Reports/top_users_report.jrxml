@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+              http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="TopUserReport" language="java" pageWidth="595" pageHeight="842"
+              columnWidth="550" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+
+    <!-- Fields for the TopUser class -->
+    <field name="reservationCount" class="java.lang.Integer"/>
+    <field name="userName" class="java.lang.String"/>
+    <field name="userEmail" class="java.lang.String"/>
+    <field name="licensePlate" class="java.lang.String"/>
+    <field name="accountCreated" class="java.time.LocalDateTime"/>
+
+    <!-- Title of the report -->
+    <title>
+        <band height="80">
+            <staticText>
+                <reportElement x="200" y="40" width="80" height="30"/>
+
+                <textElement textAlignment="Center"/>
+
+                <text><![CDATA[Top Users Report]]></text>
+            </staticText>
+        </band>
+    </title>
+
+    <!-- Column headers -->
+    <columnHeader>
+        <band height="40">
+
+            <staticText>
+                <reportElement x="0" y="0" width="100" height="30"/>
+                <text><![CDATA[User Name]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="100" y="0" width="150" height="30"/>
+                <text><![CDATA[User Email]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="250" y="0" width="100" height="30"/>
+                <text><![CDATA[License Plate]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="350" y="0" width="120" height="30"/>
+                <text><![CDATA[Account Created]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="470" y="0" width="80" height="30"/>
+                <text><![CDATA[Reservation Count]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+
+    <!-- Data rows -->
+    <detail>
+        <band height="30">
+
+            <textField>
+                <reportElement x="0" y="0" width="100" height="30"/>
+                <textFieldExpression><![CDATA[$F{userName}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="100" y="0" width="150" height="30"/>
+                <textFieldExpression><![CDATA[$F{userEmail}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="250" y="0" width="100" height="30"/>
+                <textFieldExpression><![CDATA[$F{licensePlate}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="350" y="0" width="120" height="30"/>
+                <textFieldExpression><![CDATA[$F{accountCreated}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="470" y="0" width="80" height="30"/>
+                <textFieldExpression><![CDATA[$F{reservationCount}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+
+</jasperReport>

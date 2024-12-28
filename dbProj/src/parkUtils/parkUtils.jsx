@@ -17,7 +17,6 @@ export async function reserveSpot(token, reservation, reserve) {
         if (contentType && contentType.includes('application/json')) {
           const errorData = await response.json();
           return {NotValid:true,errorMsg:errorData.error}
-          throw new Error(errorData.error || 'Unknown error occurred');
         } else {
           const errorText = await response.text();
           throw new Error(errorText);

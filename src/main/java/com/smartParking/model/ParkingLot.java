@@ -12,12 +12,12 @@ public class ParkingLot {
     private BigDecimal totalRevenue;
     private BigDecimal totalPenalty;
     private LocalDateTime createdAt;
-
+    private int managerId ;
 
     public ParkingLot() {
     }
 
-    public ParkingLot(int lotId, String name, BigDecimal longitude, BigDecimal latitude, int capacity,BigDecimal totalRevenue,BigDecimal totalPenalty , LocalDateTime createdAt) {
+    public ParkingLot(int lotId, String name, BigDecimal longitude, BigDecimal latitude, int capacity,BigDecimal totalRevenue,BigDecimal totalPenalty , LocalDateTime createdAt , int managerId) {
         this.lotId = lotId;
         this.name = name;
         this.longitude = longitude;
@@ -26,6 +26,7 @@ public class ParkingLot {
         this.totalRevenue = totalRevenue;
         this.totalPenalty = totalPenalty;
         this.createdAt = createdAt;
+        this.managerId = managerId ;
     }
 
     public ParkingLot(String name, BigDecimal longitude, BigDecimal latitude,BigDecimal totalRevenue,BigDecimal totalPenalty , int capacity) {
@@ -99,5 +100,13 @@ public class ParkingLot {
 
     public void setTotalPenalty(BigDecimal totalPenalty) {
         this.totalPenalty = totalPenalty;
+    }
+
+    public int getManagerId() {
+        return this.managerId;
+    }
+
+    public void setManagerId(int managerId) {
+        this.managerId = managerId;
     }
 }

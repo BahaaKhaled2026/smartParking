@@ -11,6 +11,11 @@ import WebSocketComponent from "../Components/WebSocketComponent";
 import useFetch from '../Hooks/useFetch';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Insights from "../Components/Insights";
+import Payment from "../Components/Payment";
+import Profile from "../Components/Profile";
+
+
 
 const MainPage = () => {
     const token=localStorage.getItem('token');
@@ -50,6 +55,8 @@ const MainPage = () => {
               if(response && response.message) {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
+                localStorage.removeItem("notifications");
+
                 navigate("/login");
                 toast.success("User signed out successfully!");
               } else {
@@ -63,15 +70,19 @@ const MainPage = () => {
       
 
     return ( 
-        <div className="flex w-full justify-between relative">
+        <div className="flex w-full justify-between max-h-[100vh] min-h-[100vh]">
             <DashboardSidebar handleLogout={handleLogout}/>
             <div className="relative w-full flex justify-between">
                 <Booking/>
                 <Dashboard/>
                 <WebSocketComponent/>
+                <Insights/>
+                <Payment/>
+                <Profile/>
                 <div className="hidden lg:block w-[60%]">
                     <MapWithUserLocation mobile={false}/>
                 </div>
+
             </div>
         </div>
      );

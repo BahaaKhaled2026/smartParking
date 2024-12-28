@@ -13,23 +13,28 @@ import SignUp from './Pages/SignUp';
 import Dashboard from './Pages/Dashboard';
 import ResetPasswordPage from './Pages/ResetPasswordPage';
 import MainPage from './Pages/MainPage';
+import { WebSocketProvider } from './Components/WebSocketProvider.jsx'
+
 
 function App() {
   useAuth();
 
   return (
     <div  className="flex w-full justify-between items-center">
-      <Router>
-        <Suspense>
-          <Routes>
-            {/* <Route path="/" element={<Intro />} /> */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/resetpassword" element={<ResetPasswordPage />} />
-            <Route path="/" element={<MainPage />} />
-          </Routes>
-        </Suspense>
-      </Router>
+      <WebSocketProvider>
+        <Router>
+          <Suspense>
+            <Routes>
+              {/* <Route path="/" element={<Intro />} /> */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/resetpassword" element={<ResetPasswordPage />} />
+              <Route path="/" element={<MainPage />} />
+            </Routes>
+          </Suspense>
+        </Router>
+      </WebSocketProvider>
+
 
       
       {/* <DashboardSidebar/>

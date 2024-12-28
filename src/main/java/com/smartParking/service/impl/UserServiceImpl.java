@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -54,11 +55,6 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalStateException("Invalid username or password.");
         }
-
-        notificationServiceImpl.sendNotification("User " + user.getUsername() + " logged in.");
-
-       // webSocketNotificationService.testNotify("User " + user.getUsername() + " logged in.");
-
         return new Object[] {user, jwtUtils.generateToken(email)};
     }
 
@@ -95,6 +91,20 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userDAO.updateUser(user);
         return true;
+    }
+
+    @Override
+    public User addBalance(BigDecimal amount) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userDAO.getUserByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("User not found with account: " + email));
+        BigDecimal currentBalance = user.getBalance();
+        if(BigDecimal.valueOf(999999999).compareTo(currentBalance.add(amount)) < 0){
+            throw new IllegalStateException("Balance limit exceeded");
+        }
+        user.setBalance(user.getBalance().add(amount));
+        userDAO.updateUser(user);
+        return user;
     }
 }
 

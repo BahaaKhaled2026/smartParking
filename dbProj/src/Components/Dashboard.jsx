@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useRecoilState } from "recoil";
 import { changedReservations, currPanel, currUser } from "../state";
 import { useEffect, useState } from "react";
@@ -13,9 +14,11 @@ const Dashboard = () => {
     
     useEffect(()=>{
         async function get(){
+            if(user){
             let temp=await getReservation(token,user.userId);
             setReservations(temp);
             console.log(temp);
+            }
         }
         get();
     },[change]);
@@ -23,6 +26,7 @@ const Dashboard = () => {
         <div 
             className={`${panel === 1 ? 'w-full lg:w-[40%] opacity-100 p-2 max-h-[calc(100vh)] overflow-y-auto' : 'opacity-0 w-0 overflow-hidden'} transition-all ease-in-out duration-300 absolute`}
         >
+            <h1 className="text-3xl text-black">Reservations</h1>
             {reservations.map((reservation) => (
                 <ReservationCard 
                     key={reservation.reservationId} 

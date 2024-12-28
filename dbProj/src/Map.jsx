@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
@@ -85,7 +87,7 @@ const MapWithUserLocation = ({mobile}) => {
     return <div>Loading...</div>;
   }
 
-  const position = userLocation ? [userLocation.latitude, userLocation.longitude] : [35, 35];
+  const position = userLocation ? [userLocation.latitude, userLocation.longitude] : [31.2564, 29.9811];
 
   
 

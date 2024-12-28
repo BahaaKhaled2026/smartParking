@@ -13,9 +13,8 @@ public class NotificationServiceImpl {
         this.messagingTemplate = messagingTemplate;
     }
 
-    public void sendNotification(String message){
-        System.out.println("NotificationServiceImpl1: " + message);
-        messagingTemplate.convertAndSend("/topic/notification", message);
-        System.out.println("NotificationServiceImpl2: " + message);
+
+    public void notify(int reservationId, String s , int userId) {
+        messagingTemplate.convertAndSend("/topic/notification/"+userId, s);
     }
 }

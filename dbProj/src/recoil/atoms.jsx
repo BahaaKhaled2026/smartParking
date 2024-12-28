@@ -10,3 +10,8 @@ export const isAuthenticatedState = atom({
   key: 'isAuthenticatedState',
   default: !!localStorage.getItem('token'),
 });
+
+export const notificationsState = atom({
+  key: 'notificationsState',
+  default: [], // Default is an empty array to store notifications.
+});

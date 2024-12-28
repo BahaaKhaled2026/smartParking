@@ -1,6 +1,8 @@
 package com.smartParking.service.impl;
+
 import com.smartParking.service.impl.NotificationServiceImpl;
 import com.smartParking.WebSocketNotificationService;
+
 import com.smartParking.dao.ParkingLotDAO;
 import com.smartParking.dao.ReservationDAO;
 import com.smartParking.dao.ParkingSpotDAO;
@@ -21,8 +23,7 @@ import java.util.List;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
-    @Autowired
-    private 
+
     @Autowired
     private ReservationDAO reservationDAO;
 
@@ -30,13 +31,14 @@ public class ReservationServiceImpl implements ReservationService {
     private ParkingSpotDAO parkingSpotDAO;
 
     @Autowired
+    private NotificationServiceImpl notificationService;
+
+    @Autowired
     private UserDAO userDAO;
 
     @Autowired
     private ParkingLotDAO parkingLotDAO;
 
-    @Autowired
-    private WebSocketNotificationService notificationService;
 
     private static final BigDecimal PENALTY_RATE = BigDecimal.valueOf(0.1);
     private static final long MAX_RESERVATION_HOURS = 24;
@@ -46,7 +48,9 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     public Number createReservation(Reservation reservation , boolean reserve) {
+        System.out.println(reservation);
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(email);
         User user = userDAO.getUserByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("User not found"));
         if(!user.getRole().equals("DRIVER")) {
@@ -62,25 +66,33 @@ public class ReservationServiceImpl implements ReservationService {
         if (hours > MAX_RESERVATION_HOURS) {
             throw new IllegalStateException("Reservations cannot exceed 24 hours.");
         }
+        System.out.println(1);
         if (hours < MIN_RESERVATION_HOURS) {
             throw new IllegalStateException("Reservations must be at least 1 hour.");
         }
+        System.out.println(2);
         if(reservation.getStartTime().isBefore(LocalDateTime.now())) {
             throw new IllegalStateException("Reservations cannot be made in the past.");
         }
+        System.out.println(3);
         if(reservation.getEndTime().isBefore(reservation.getStartTime())) {
             throw new IllegalStateException("End time must be after start time.");
         }
+        System.out.println(4);
 
         if (!reservationDAO.isSpotAvailableForDuration(reservation.getSpotId(),
                 reservation.getStartTime(), reservation.getEndTime())) {
             throw new IllegalStateException("Spot is not available for the selected duration.");
         }
+        System.out.println(5);
 
         int lotId = parkingSpotDAO.getParkingSpotById(reservation.getSpotId())
                 .orElseThrow(() -> new IllegalStateException("Parking spot not found"))
                 .getLotId();
         reservation.setCost(calculateReservationCost(reservation.getStartTime(), reservation.getEndTime() , lotId));
+        if(reservation.getCost().compareTo(user.getBalance()) > 0) {
+            throw new IllegalStateException("Insufficient balance.");
+        }
         if(reserve){
             if(reservation.getCost().compareTo(user.getBalance()) > 0) {
                 throw new IllegalStateException("Insufficient balance.");
@@ -88,7 +100,11 @@ public class ReservationServiceImpl implements ReservationService {
             user.setBalance(user.getBalance().subtract(reservation.getCost()));
             userDAO.updateUser(user);
             parkingLotDAO.updateTotalRevenue(lotId, reservation.getCost());
+            int userId = reservation.getUserId();
+            notificationService.notify(reservation.getReservationId(), "Your reservation has been confirmed. You will be charged $" + reservation.getCost() + ".", userId);
+
             return reservationDAO.createReservation(reservation);
+
         }
         System.out.println("cost: " + reservation.getCost());
         return reservation.getCost();
@@ -116,13 +132,15 @@ public class ReservationServiceImpl implements ReservationService {
                 .orElseThrow(() -> new IllegalStateException("User not found."));
         user.setBalance(user.getBalance().add(reservation.getCost()));
         user.setTotalPenalty(user.getTotalPenalty().add(penalty));
-        notificationService.notifyPenalty(reservation.getReservationId(), "You have been charged a penalty of $" + penalty + " for cancelling your reservation.");
         userDAO.updateUser(user);
 
         int lotId = spot.getLotId();
         parkingLotDAO.updateTotalRevenue(lotId, reservation.getCost().multiply(BigDecimal.valueOf(-1)));
         parkingLotDAO.updateTotalPenalty(lotId, penalty);
         parkingSpotDAO.updateParkingSpot(spot);
+
+        int userId = reservation.getUserId();
+        notificationService.notify(reservation.getReservationId(), "Your reservation has been cancelled. You have been charged a penalty of $" + penalty + ".", userId);
         return true;
     }
 
@@ -149,7 +167,9 @@ public class ReservationServiceImpl implements ReservationService {
 
         int lotId = spot.getLotId();
         parkingLotDAO.updateTotalPenalty(lotId, penalty);
-        notificationService.notifyPenalty(reservation.getReservationId(), "You have been charged a penalty of $" + penalty + " for overstaying your reservation.");
+
+        int userId = reservation.getUserId();
+        notificationService.notify(reservation.getReservationId(), "You have been charged a penalty of $" + penalty + " for overstaying your reservation.", userId);
     }
 
     public BigDecimal calculateReservationCost(LocalDateTime startTime, LocalDateTime endTime , int lotId) {
@@ -204,8 +224,9 @@ public class ReservationServiceImpl implements ReservationService {
 
                 int lotId = spot.getLotId();
                 parkingLotDAO.updateTotalPenalty(lotId, penalty);
+                int userId = reservation.getUserId();
 
-                notificationService.notifyPenalty(reservation.getReservationId(), "You have been charged a penalty of $" + penalty + " for not showing up to your reservation.");
+                notificationService.notify(reservation.getReservationId(), "You have been charged a penalty of $" + penalty + " for not showing up to your reservation.", userId);
             }
         });
     }
@@ -281,10 +302,10 @@ public class ReservationServiceImpl implements ReservationService {
     public void tenMinuteLeftNotification() {
         LocalDateTime now = LocalDateTime.now();
         List<Reservation> activeReservations = reservationDAO.getReservationsByStatus("ACTIVE");
-
         for (Reservation reservation : activeReservations) {
             if (Duration.between(now, reservation.getEndTime()).toMinutes() == 10) {
-                notificationService.notifyTenMinuteLeft(reservation.getReservationId(), "You have 10 minutes left before your reservation ends.");
+                int userId = reservation.getUserId();
+                notificationService.notify(reservation.getReservationId(), "You have 10 minutes left before your reservation ends.", userId);
             }
         }
     }

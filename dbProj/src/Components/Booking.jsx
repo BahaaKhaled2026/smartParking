@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import { useRecoilState } from "recoil";
-import { chosenLot, currPanel, currUser } from "../state";
+import { changedReservations, chosenLot, currPanel, currUser } from "../state";
 import MapWithUserLocation from '../Map';
 import useFetch from '../Hooks/useFetch';
 import { reserveSpot } from '../parkUtils/parkUtils';
@@ -63,6 +63,7 @@ const Booking = () => {
             setCloseButton(false)
             setReserveObj(obj);
             let x=await reserveSpot(token, obj, false);
+            
             if(x.NotValid){
               setError(x.errorMsg);
               setCloseButton(true);
@@ -78,12 +79,16 @@ const Booking = () => {
     }
     up();
   }, [selectedSpot, startDate, startHour, endDate, endHour]);
+  const [change,setChange]=useRecoilState(changedReservations);
   async function reserveSubmit(){
     console.log(reserveObj);
     
     let temp=await reserveSpot(token,reserveObj,true);
     console.log(temp);
-    
+    setLot(null)
+    setChange(5);
+    setPrice(0);
+    setCloseButton(true);
   }
 
 
