@@ -58,5 +58,11 @@ CREATE TABLE reservations (
 
 SELECT user, host, plugin FROM mysql.user WHERE user = 'root';
 
+CREATE INDEX idx_parking_spots_lot_status_type ON parking_spots(lot_id, status, type);
+CREATE INDEX idx_reservations_user_id_status ON reservations(user_id, status);
+CREATE INDEX idx_reservations_spot_status ON reservations(spot_id, status);
+CREATE INDEX idx_users_username_email ON users(username, email);
+
+
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'smart_city_parking';
 FLUSH PRIVILEGES;
