@@ -59,6 +59,7 @@ export function DashboardSidebar({ className, handleLogout }) {
             <i className="fa-solid fa-chart-line"></i>
             <span className="hidden md:block">Insights</span>
           </button>
+          
               </>
             ): 
             (
@@ -82,6 +83,12 @@ export function DashboardSidebar({ className, handleLogout }) {
             className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
             <i className="fa-solid fa-chart-line"></i>
             <span className="hidden md:block">Insights</span>
+          </button>
+          <button 
+            onClick={() => setPanel(9)}
+            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
+            
+            <span className="hidden md:block">Add Lot</span>
           </button>
               
               </>

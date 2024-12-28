@@ -14,6 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Insights from "../Components/Insights";
 import Payment from "../Components/Payment";
 import Profile from "../Components/Profile";
+import AddLot from "../Components/AddLot";
 
 
 
@@ -77,6 +78,7 @@ const MainPage = () => {
                 <Dashboard/>
                 <WebSocketComponent/>
                 <Insights/>
+                <AddLot/>
                 <Payment/>
                 <Profile/>
                 <div className="hidden lg:block w-[60%]">

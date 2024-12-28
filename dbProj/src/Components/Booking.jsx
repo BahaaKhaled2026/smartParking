@@ -7,6 +7,7 @@ import useFetch from '../Hooks/useFetch';
 import { reserveSpot } from '../parkUtils/parkUtils';
 import useFetch2 from '../Hooks/useFetch2';
 import { useNavigate } from 'react-router-dom';
+import { sendVerification } from '../Utils/formUtils';
 
 const Booking = () => {
   const [panel, setPanel] = useRecoilState(currPanel);
@@ -85,6 +86,8 @@ const Booking = () => {
     
     let temp=await reserveSpot(token,reserveObj,true);
     console.log(temp);
+    reserveObj.cost=price;
+    sendVerification(user.email,reserveObj);
     setLot(null)
     setChange(5);
     setPrice(0);

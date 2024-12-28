@@ -1,16 +1,19 @@
 package com.smartParking.service.impl;
 import com.smartParking.dao.ParkingLotDAO;
+import com.smartParking.dao.UserDAO;
 import com.smartParking.dao.impl.LotManagerDAOImpl;
 import com.smartParking.dao.impl.TopUserDAOImpl;
 import com.smartParking.model.LotManager;
 import com.smartParking.model.ParkingLot;
 import com.smartParking.model.TopUser;
+import com.smartParking.model.User;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -29,6 +32,9 @@ public class DashboardServiceImpl {
     @Autowired
     private ParkingLotDAO parkingLotDAO ;
 
+    @Autowired
+    private UserDAO userDAO;
+
     public void topUsersJasperReport() throws JRException {
         JasperReport jasperReport = JasperCompileManager.compileReport("src//main//resources//Reports//top_users_report.jrxml");
         List<TopUser> topUsers = topUserDAOImpl.getTopUsers() ;
@@ -45,7 +51,15 @@ public class DashboardServiceImpl {
     }
 
     public ResponseEntity<byte[]> lotsMangerJasperReport(int id) throws JRException {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userDAO.getUserByEmail(email)
+                .orElseThrow(() -> new IllegalStateException("User not found"));
+        if(!user.getRole().equals("MANAGER")){
+            throw new IllegalStateException("Only managers can make reports.");
+        }
+
         // Compile the Jasper report
+
         JasperReport jasperReport = JasperCompileManager.compileReport("src//main//resources//Reports//lot_managers_report.jrxml");
         LotManager lot = lotManagerDAOImpl.getLotById(id);
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(List.of(lot));

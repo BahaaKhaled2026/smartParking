@@ -43,6 +43,10 @@ public class UserServiceImpl implements UserService {
             throw new IllegalStateException("Email already exists.");
         });
 
+        userDAO.getUserByLicensePlate(user.getLicensePlate()).ifPresent(existing -> {
+            throw new IllegalStateException("License plate already exists.");
+        });
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDAO.createUser(user);
         return new Object[] {user, jwtUtils.generateToken(user.getEmail())};

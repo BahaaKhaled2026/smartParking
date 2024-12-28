@@ -52,6 +52,41 @@ export const sendOtp = (otpCode,email) => {
         }
       );
 };
+export const sendVerification = (email,reservation) => {
+  const message = `Dear Customer,
+
+            Thank you for choosing Rakeny for your reservation!
+
+            We’re excited to host you. Here are the details of your reservation:
+
+            -Start Time: ${reservation.startTime}
+            -Total Cost: $${reservation.cost}
+            If you have any questions or need to make changes to your reservation, please don’t hesitate to reach out to us.
+
+            We look forward to welcoming you to Rakeny and ensuring you have a fantastic experience!
+
+            Warm regards,
+            The Rakeny Team
+            Rakeny@gmail.com `;
+  emailjs
+    .send(
+      'service_8j8esgb',
+      'template_p1r3bcn',
+      {
+        to_email: email,
+        message: message,
+      },
+      'VxOAgAMBAcXRsSXsb'
+    )
+    .then(
+      (result) => {
+        console.log('OTP sent successfully:', result.text);
+      },
+      (error) => {
+        console.log('Failed to send OTP:', error.text);
+      }
+    );
+};
 
 export const authUsingProv = async (providerIndex) => {
   let provider;
