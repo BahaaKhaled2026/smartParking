@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
 import 'leaflet-routing-machine';
 import { useRecoilState } from 'recoil';
-import { chosenLot, currUser } from './state';
+import { chosenLot, currPanel, currUser } from './state';
 import useFetch from './Hooks/useFetch';
 import useFetch2 from './Hooks/useFetch2';
 
@@ -54,6 +54,7 @@ const MapWithUserLocation = ({mobile}) => {
   const [lot,setLot]=useRecoilState(chosenLot);
   const token=localStorage.getItem('token');
   const[user,setUser]=useRecoilState(currUser);
+  const[panel,setPanel]=useRecoilState(currPanel);
   const { data: destinations, loading: loading1, error: error1 } = useFetch2('http://localhost:8080/lots/getlots', {
     method: 'GET',
     token: token,
@@ -91,6 +92,7 @@ const MapWithUserLocation = ({mobile}) => {
   const handleMarkerClick = (destination) => {
     setLot(destination);
     setSelectedDestinationId(destination.lotId);
+    setPanel(2);
   };
 
   return (

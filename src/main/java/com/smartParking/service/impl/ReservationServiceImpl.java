@@ -1,5 +1,5 @@
 package com.smartParking.service.impl;
-
+import com.smartParking.service.impl.NotificationServiceImpl;
 import com.smartParking.WebSocketNotificationService;
 import com.smartParking.dao.ParkingLotDAO;
 import com.smartParking.dao.ReservationDAO;
@@ -21,7 +21,8 @@ import java.util.List;
 
 @Service
 public class ReservationServiceImpl implements ReservationService {
-
+    @Autowired
+    private 
     @Autowired
     private ReservationDAO reservationDAO;
 

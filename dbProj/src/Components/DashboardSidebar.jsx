@@ -9,7 +9,7 @@ export function DashboardSidebar({ className, handleLogout }) {
   
   return (
     <div
-      className={`bg-black flex flex-col items-center md:items-start text-white pb-12 min-h-screen ${className} w-20 md:w-60`} // Set width to w-20 on smaller screens and w-60 on medium and up
+      className={`bg-black flex flex-col items-center md:items-start text-white pb-12 min-h-[100%] ${className} w-[13%] md:w-[10%]`} // Set width to w-20 on smaller screens and w-60 on medium and up
     >
       <div className="space-y-4 py-4">
         <div className="px-4 py-2">
@@ -33,22 +33,6 @@ export function DashboardSidebar({ className, handleLogout }) {
             className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
             <i className="fa-solid fa-plus"></i>
             <span className="hidden md:block">Book</span>
-          </button>
-
-          {/* Insights Button */}
-          <button 
-            onClick={() => setPanel(3)}
-            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
-            <i className="fa-solid fa-chart-line"></i>
-            <span className="hidden md:block">Insights</span>
-          </button>
-
-          {/* Profile Button */}
-          <button 
-            onClick={() => setPanel(4)}
-            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
-            <i className="fa-solid fa-user"></i>
-            <span className="hidden md:block">Profile</span>
           </button>
 
           {/* Payment Details Button */}

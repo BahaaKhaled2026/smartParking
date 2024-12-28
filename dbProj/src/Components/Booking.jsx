@@ -88,7 +88,7 @@ const Booking = () => {
 
 
   return (
-    <div className={`${panel === 2 ? 'w-full lg:w-[40%] p-5' : 'w-0'} bg-white text-black overflow-hidden  ease-in-out duration-300 transition-all`}>
+    <div className={`${panel === 2 ? 'w-full lg:w-[40%] p-5 max-h-[calc(100vh)] overflow-y-auto' : 'w-0'} bg-white absolute text-black overflow-hidden  ease-in-out duration-300 transition-all`}>
       <h1 className="text-3xl text-black mb-4">BOOK YOUR SPOT</h1>
       <div className="space-y-4">
         <div className="flex space-x-2">

@@ -63,13 +63,15 @@ const MainPage = () => {
       
 
     return ( 
-        <div className="flex w-full justify-between ">
+        <div className="flex w-full justify-between relative">
             <DashboardSidebar handleLogout={handleLogout}/>
-            {panel==2&&<Booking/>}
-            {panel==1&&<Dashboard/>}
-            {panel==6&&<WebSocketComponent/>}
-            <div className="hidden lg:block w-[60%]">
-                <MapWithUserLocation mobile={false}/>
+            <div className="relative w-full flex justify-between">
+                <Booking/>
+                <Dashboard/>
+                <WebSocketComponent/>
+                <div className="hidden lg:block w-[60%]">
+                    <MapWithUserLocation mobile={false}/>
+                </div>
             </div>
         </div>
      );
