@@ -8,7 +8,6 @@ export function DashboardSidebar({ className, handleLogout }) {
   const [panel, setPanel] = useRecoilState(currPanel);
   const [user, setUser] = useRecoilState(currUser);
 
-  // console.log(user.role);
 
 
   
@@ -23,7 +22,7 @@ export function DashboardSidebar({ className, handleLogout }) {
           </h2>
         </div>
         <nav className="space-y-1">
-          {user.role === "DRIVER" ?(
+          { user && user.role === "DRIVER" ?(
               <>
                <button 
             onClick={() => setPanel(1)}
@@ -39,8 +38,16 @@ export function DashboardSidebar({ className, handleLogout }) {
             <i className="fa-solid fa-plus"></i>
             <span className="hidden md:block">Book</span>
           </button>
+
+          <button 
+            onClick={() => setPanel(5)}
+            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
+            <i className="fa-solid fa-coins"></i>
+            <span className="hidden md:block">Payment Details</span>
+          </button>
+
               </>
-            ): user.role === "MANAGER" ? (
+            ): user && user.role === "MANAGER" ? (
               <>
                         <button 
             onClick={() => setPanel(3)}
@@ -81,13 +88,6 @@ export function DashboardSidebar({ className, handleLogout }) {
             className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
             <i className="fa-solid fa-user"></i>
             <span className="hidden md:block">Profile</span>
-          </button>
-
-          <button 
-            onClick={() => setPanel(5)}
-            className="w-full flex justify-start items-center gap-2 hover:bg-accent px-4 py-2 text-left">
-            <i className="fa-solid fa-coins"></i>
-            <span className="hidden md:block">Payment Details</span>
           </button>
 
           <button 

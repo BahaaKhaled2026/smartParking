@@ -98,17 +98,12 @@ public class UserController {
         }
     }
 
-    @GetMapping("/manager/lots/{managerId}")
-    public ResponseEntity<?> getLots(@PathVariable ("managerId") int Id) {
-        try{
-            dashboardService.lotsMangerJasperReport(Id);
-            return ResponseEntity.ok("report has been made successfully") ;
-        }
-        catch (Exception e){
-            return ResponseEntity.status(500).body(e.getMessage()) ;
+    @GetMapping("/manager/lots")
+    public ResponseEntity<?> getLots(@RequestParam("lotId") int lotId) {
+        try {
+            return dashboardService.lotsMangerJasperReport(lotId);
+        } catch (Exception e) {
+            return ResponseEntity.status(400).body(null);
         }
     }
-
-
-
 }

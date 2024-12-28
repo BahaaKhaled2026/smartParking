@@ -37,4 +37,13 @@ public class LotManagerDAOImpl {
 
         return jdbcTemplate.query(sql, topUserRowMapper , id);
     }
+
+    public LotManager getLotById(int id){
+        String sql = "SELECT parking_lots.lot_id , parking_lots.longitude , parking_lots.latitude , " +
+        "parking_lots.total_revenue , parking_lots.total_penalty , parking_lots.capacity ,t.occupied " +
+        "from (SELECT lot_id, COUNT(*) as occupied FROM parking_spots where status = 'OCCUPIED' " +
+        "GROUP BY lot_id) t INNER JOIN parking_lots ON t.lot_id = parking_lots.lot_id AND parking_lots.lot_id = ? ";
+
+        return jdbcTemplate.queryForObject(sql, topUserRowMapper , id);
+    }
 }

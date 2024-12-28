@@ -14,9 +14,11 @@ const Dashboard = () => {
     
     useEffect(()=>{
         async function get(){
+            if(user){
             let temp=await getReservation(token,user.userId);
             setReservations(temp);
             console.log(temp);
+            }
         }
         get();
     },[change]);

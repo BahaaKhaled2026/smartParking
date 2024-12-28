@@ -8,8 +8,12 @@ import com.smartParking.model.TopUser;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,10 +44,11 @@ public class DashboardServiceImpl {
         JasperExportManager.exportReportToPdfFile(jasperPrint, "top_users_report.pdf");
     }
 
-    public void lotsMangerJasperReport(int id) throws JRException {
+    public ResponseEntity<byte[]> lotsMangerJasperReport(int id) throws JRException {
+        // Compile the Jasper report
         JasperReport jasperReport = JasperCompileManager.compileReport("src//main//resources//Reports//lot_managers_report.jrxml");
-        List<LotManager> lots = lotManagerDAOImpl.getLots(id) ;
-        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(lots);
+        LotManager lot = lotManagerDAOImpl.getLotById(id);
+        JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(List.of(lot));
 
         // Parameters (optional)
         HashMap<String, Object> parameters = new HashMap<>();
@@ -51,8 +56,15 @@ public class DashboardServiceImpl {
         // Fill the report with data
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
 
-        // Export the report to PDF
-        JasperExportManager.exportReportToPdfFile(jasperPrint, "lots_manger_report.pdf");
+        // Export the report to a byte array
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
+
+        // Return the PDF file as a ResponseEntity
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=lot_" + id + "_report.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(outputStream.toByteArray());
     }
 
     public void lotsJasperReport() throws JRException {
