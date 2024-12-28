@@ -51,7 +51,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = getJwtFromRequest(request);
         if(token.equals("server")){
-            String account = "body2015.am43@gmail.com";
+            String account = "sim@server.com";
             System.out.println("Server token");
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(account, null, null);

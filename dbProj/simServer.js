@@ -1,10 +1,10 @@
 import fetch from 'node-fetch';
 
 const user = {
-  id: 1,
+  id: 10,
   username: 'sim',
-  password: '@Aa7nngl',
-  email: 'body2015.am43@gmail.com',
+  password: 'Simserver@1234',
+  email: 'sim@server.com',
 };
 
 const BASE_URL = 'http://localhost:8080';
@@ -13,13 +13,11 @@ let token = 'server';
 
 
 
-// Helper function to construct query parameters
 const constructQueryParams = (params) =>
   Object.entries(params)
     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
     .join('&');
 
-// Helper function to fetch lots
 const fetchLots = async () => {
   try {
     const queryParams = constructQueryParams({});
@@ -41,7 +39,6 @@ const fetchLots = async () => {
   }
 };
 
-// Helper function to fetch spots for a specific lot
 const fetchSpots = async (lotId) => {
   try {
     const queryParams = constructQueryParams({ lotId });
@@ -59,14 +56,13 @@ const fetchSpots = async (lotId) => {
     if (!response.ok) throw new Error('Failed to fetch spots');
     const spots = await response.json();
     
-    return spots.filter((spot) => spot.status === 'AVAILABLE'); // Filter spots with status 'ACTIVE'
+    return spots.filter((spot) => spot.status === 'AVAILABLE'); 
   } catch (error) {
     console.error(`Error fetching spots for lot ${lotId}:`, error);
     return [];
   }
 };
 
-// Helper function to make a reservation
 const reserveSpot = async (spot) => {
   const obj = {
     userId: user.id,
@@ -106,7 +102,6 @@ const reserveSpot = async (spot) => {
   }
 };
 
-// Helper function to cancel a reservation
 const cancelReservation = async (reservationId) => {
   try {
     const url = `${BASE_URL}/reservations/cancel?reservationId=${reservationId}`;
@@ -127,11 +122,9 @@ const cancelReservation = async (reservationId) => {
   }
 };
 
-// Main function to periodically reserve and cancel
 const main = async () => {
 
  
-  // Periodically reserve spots
   setInterval(async () => {
     const lots = await fetchLots();
     
