@@ -1,13 +1,14 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { currPanel } from '../state';
+import { currPanel, currUser } from '../state';
 
 const Payment = () => {
   const [panel, setPanel] = useRecoilState(currPanel);
   const [price, setPrice] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [user, setUser] = useRecoilState(currUser);
 
   const token = localStorage.getItem('token'); // Retrieve the user's token
 
@@ -45,8 +46,10 @@ const Payment = () => {
         throw new Error(errorData.message || 'Failed to add balance');
       }
 
-      const message = await response.text(); // Read the success message
-      setSuccess(message || `Payment of $${parsedPrice.toFixed(2)} made successfully`);
+      const res = await response.json(); // Read the success message
+      setSuccess(res.message || `Payment of $${parsedPrice.toFixed(2)} made successfully`);
+      setUser(res.user);
+      localStorage.setItem('user',JSON.stringify(res.user));
       setError('');
       setPrice('');
     } catch (error) {
@@ -60,7 +63,7 @@ const Payment = () => {
     <div
       className={`${
         panel === 5 ? 'w-full lg:w-[40%] p-5' : 'w-0'
-      } bg-white-400 text-white overflow-hidden ease-in-out duration-300 transition-all`}
+      } bg-white-400 text-black overflow-hidden ease-in-out duration-300 transition-all`}
     >
       <h1 className="text-3xl text-black mb-4">Payment</h1>
       <input

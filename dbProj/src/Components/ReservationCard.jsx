@@ -22,9 +22,6 @@ const ReservationCard = ({spotNumber,name,status,spotId,userId,startTime,endTime
         <p><span className="font-semibold">Penalty:</span> ${penalty.toFixed(2)}</p>
       </div>
       <div className="flex justify-between">
-        <button className="bg-white text-black border border-black px-4 py-2 hover:bg-black hover:text-white">
-          Edit
-        </button>
         <button
         disabled={!(status=="ACTIVE")}
         onClick={async()=>{

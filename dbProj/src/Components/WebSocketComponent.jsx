@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Client } from '@stomp/stompjs';
 import { useRecoilState , useRecoilValue } from "recoil";
 import { notificationsState } from '../recoil/atoms';
-import { currPanel } from "../state";
+import { currPanel, notifi } from "../state";
 import createSocket from '../Socket';
 
 const WebSocketComponent = () => {
@@ -12,7 +12,11 @@ const WebSocketComponent = () => {
   const [status, setStatus] = useState('Disconnected');
   const [panel, setPanel] = useRecoilState(currPanel);
   const [showedNotifications,setShowedNotifications]=useState([]);
-
+  const [not,setNot]=useRecoilState(notifi);
+  useEffect(()=>{
+    if(panel==6)
+      setNot(false);
+  },[panel]);
   useEffect(() => {
     // Load notifications from localStorage or initialize with an empty array
     let loadedNotifications = JSON.parse(localStorage.getItem("notifications")) || [];

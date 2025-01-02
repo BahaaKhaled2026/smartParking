@@ -58,7 +58,7 @@ public class ParkingLotDAOImpl implements ParkingLotDAO {
             ps.setInt(7, parkingLot.getManagerId());
             return ps;
         }, keyHolder);
-
+        parkingLot.setLotId(keyHolder.getKey().intValue());
         return keyHolder.getKey() != null ? keyHolder.getKey().intValue() : -1;
     }
 

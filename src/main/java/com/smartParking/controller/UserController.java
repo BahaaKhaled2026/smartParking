@@ -64,8 +64,7 @@ public class UserController {
     @PostMapping("/addbalance")
     public ResponseEntity<?> addBalance(@RequestParam("amount") BigDecimal amount) {
         try {
-            userService.addBalance(amount);
-            return ResponseEntity.ok("Balance added successfully");
+            return ResponseEntity.ok(Map.of("user",userService.addBalance(amount),"message","Balance added Successfully"));
         } catch (RuntimeException e) {
             return ResponseEntity.status(400).body(Map.of("message", e.getMessage())); // Return error message if account already exists
         }

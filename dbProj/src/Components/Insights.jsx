@@ -20,7 +20,7 @@ const Insights = () => {
       token: token,
       params: { managerId: user ? user.userId : ""},
     },
-    [user.userId, change] // Dependency array to refetch when user or change updates
+    [ user.userId,change] // Dependency array to refetch when user or change updates
   );
   useEffect(() => {
     if (destinations) {

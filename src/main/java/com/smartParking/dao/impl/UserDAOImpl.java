@@ -103,4 +103,10 @@ public class UserDAOImpl implements UserDAO {
         String sql = "UPDATE users SET role = ? WHERE user_id = ?";
         return jdbcTemplate.update(sql, newRole, userId) > 0;
     }
+
+    @Override
+    public Optional<User> getUserByLicensePlate(String licensePlate) {
+        String sql = "SELECT * FROM users WHERE license_plate = ?";
+        return jdbcTemplate.query(sql, userRowMapper, licensePlate).stream().findFirst();
+    }
 }

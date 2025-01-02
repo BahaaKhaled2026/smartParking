@@ -17,7 +17,6 @@ export async function reserveSpot(token, reservation, reserve) {
         if (contentType && contentType.includes('application/json')) {
           const errorData = await response.json();
           return {NotValid:true,errorMsg:errorData.error}
-          throw new Error(errorData.error || 'Unknown error occurred');
         } else {
           const errorText = await response.text();
           throw new Error(errorText);
@@ -99,4 +98,30 @@ export const arriveReservation = async (reservationId,token) => {
     console.error('Error cancelling reservation:', error);
   }
 };
+export const addLotUtil = async (parkingLot, token) => {
+  const url = "http://localhost:8080/lots/addlot"; // Your endpoint URL
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`, 
+      },
+      body: JSON.stringify(parkingLot), 
+    });
+
+    if (!response.ok) {
+      const errorMessage = await response.text();
+      throw new Error(errorMessage);
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error("Error adding parking lot:", error.message);
+    throw error; 
+  }
+};
+
   

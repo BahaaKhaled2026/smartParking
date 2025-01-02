@@ -23,12 +23,28 @@ const Dashboard = () => {
         get();
     },[change]);
     return ( 
-        <div className={`${panel === 1 ? 'w-full lg:w-[40%]' : 'w-0'}`}>
-            {reservations.map((reservation,index)=>(
-                <ReservationCard key = {index} spotNumber={reservation.spotNumber} name={reservation.lotName} cost={reservation.cost} userId={reservation.userId} penalty={reservation.penalty} status={reservation.status} startTime={reservation.startTime} endTime={reservation.endTime} spotId={reservation.spotId} reservationId={reservation.reservationId} />
+        <div 
+            className={`${panel === 1 ? 'w-full lg:w-[40%] opacity-100 p-2 max-h-[calc(100vh)] overflow-y-auto' : 'opacity-0 w-0 overflow-hidden'} transition-all ease-in-out duration-300 absolute`}
+        >
+            <h1 className="text-3xl text-black">Reservations</h1>
+            {reservations.map((reservation) => (
+                <ReservationCard 
+                    key={reservation.reservationId} 
+                    spotNumber={reservation.spotNumber} 
+                    name={reservation.lotName} 
+                    cost={reservation.cost} 
+                    userId={reservation.userId} 
+                    penalty={reservation.penalty} 
+                    status={reservation.status} 
+                    startTime={reservation.startTime} 
+                    endTime={reservation.endTime} 
+                    spotId={reservation.spotId} 
+                    reservationId={reservation.reservationId} 
+                />
             ))}
         </div>
-     );
+    );
+    
 }
  
 export default Dashboard;

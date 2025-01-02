@@ -16,5 +16,5 @@ public interface UserService {
 
     boolean forgetPassword(String email, String password);
 
-    void addBalance(BigDecimal amount);
+    User addBalance(BigDecimal amount);
 }

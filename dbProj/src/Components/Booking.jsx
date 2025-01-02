@@ -1,12 +1,13 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import { useRecoilState } from "recoil";
-import { chosenLot, currPanel, currUser } from "../state";
+import { changedReservations, chosenLot, currPanel, currUser } from "../state";
 import MapWithUserLocation from '../Map';
 import useFetch from '../Hooks/useFetch';
 import { reserveSpot } from '../parkUtils/parkUtils';
 import useFetch2 from '../Hooks/useFetch2';
 import { useNavigate } from 'react-router-dom';
+import { sendVerification } from '../Utils/formUtils';
 
 const Booking = () => {
   const [panel, setPanel] = useRecoilState(currPanel);
@@ -63,6 +64,7 @@ const Booking = () => {
             setCloseButton(false)
             setReserveObj(obj);
             let x=await reserveSpot(token, obj, false);
+            
             if(x.NotValid){
               setError(x.errorMsg);
               setCloseButton(true);
@@ -78,17 +80,23 @@ const Booking = () => {
     }
     up();
   }, [selectedSpot, startDate, startHour, endDate, endHour]);
+  const [change,setChange]=useRecoilState(changedReservations);
   async function reserveSubmit(){
     console.log(reserveObj);
     
     let temp=await reserveSpot(token,reserveObj,true);
     console.log(temp);
-    
+    reserveObj.cost=price;
+    sendVerification(user.email,reserveObj);
+    setLot(null)
+    setChange(5);
+    setPrice(0);
+    setCloseButton(true);
   }
 
 
   return (
-    <div className={`${panel === 2 ? 'w-full lg:w-[40%] p-5' : 'w-0'} bg-white text-black overflow-hidden  ease-in-out duration-300 transition-all`}>
+    <div className={`${panel === 2 ? 'w-full lg:w-[40%] p-5 max-h-[calc(100vh)] overflow-y-auto' : 'w-0'} bg-white absolute text-black overflow-hidden  ease-in-out duration-300 transition-all`}>
       <h1 className="text-3xl text-black mb-4">BOOK YOUR SPOT</h1>
       <div className="space-y-4">
         <div className="flex space-x-2">

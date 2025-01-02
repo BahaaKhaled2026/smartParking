@@ -1,5 +1,8 @@
 package com.smartParking.service.impl;
 
+import com.smartParking.service.impl.NotificationServiceImpl;
+import com.smartParking.WebSocketNotificationService;
+
 import com.smartParking.dao.ParkingLotDAO;
 import com.smartParking.dao.ReservationDAO;
 import com.smartParking.dao.ParkingSpotDAO;
@@ -45,7 +48,9 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     public Number createReservation(Reservation reservation , boolean reserve) {
+        System.out.println(reservation);
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(email);
         User user = userDAO.getUserByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("User not found"));
         if(!user.getRole().equals("DRIVER")) {
@@ -61,25 +66,33 @@ public class ReservationServiceImpl implements ReservationService {
         if (hours > MAX_RESERVATION_HOURS) {
             throw new IllegalStateException("Reservations cannot exceed 24 hours.");
         }
+        System.out.println(1);
         if (hours < MIN_RESERVATION_HOURS) {
             throw new IllegalStateException("Reservations must be at least 1 hour.");
         }
+        System.out.println(2);
         if(reservation.getStartTime().isBefore(LocalDateTime.now())) {
             throw new IllegalStateException("Reservations cannot be made in the past.");
         }
+        System.out.println(3);
         if(reservation.getEndTime().isBefore(reservation.getStartTime())) {
             throw new IllegalStateException("End time must be after start time.");
         }
+        System.out.println(4);
 
         if (!reservationDAO.isSpotAvailableForDuration(reservation.getSpotId(),
                 reservation.getStartTime(), reservation.getEndTime())) {
             throw new IllegalStateException("Spot is not available for the selected duration.");
         }
+        System.out.println(5);
 
         int lotId = parkingSpotDAO.getParkingSpotById(reservation.getSpotId())
                 .orElseThrow(() -> new IllegalStateException("Parking spot not found"))
                 .getLotId();
         reservation.setCost(calculateReservationCost(reservation.getStartTime(), reservation.getEndTime() , lotId));
+        if(reservation.getCost().compareTo(user.getBalance()) > 0) {
+            throw new IllegalStateException("Insufficient balance.");
+        }
         if(reserve){
             if(reservation.getCost().compareTo(user.getBalance()) > 0) {
                 throw new IllegalStateException("Insufficient balance.");

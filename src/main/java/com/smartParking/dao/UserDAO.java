@@ -13,5 +13,5 @@ public interface UserDAO {
     boolean updateUser(User user);
     boolean deleteUser(int userId);
     boolean updateUserRole(int userId, String newRole);
-
+    Optional<User> getUserByLicensePlate(String licensePlate);
 }

@@ -43,6 +43,10 @@ public class UserServiceImpl implements UserService {
             throw new IllegalStateException("Email already exists.");
         });
 
+        userDAO.getUserByLicensePlate(user.getLicensePlate()).ifPresent(existing -> {
+            throw new IllegalStateException("License plate already exists.");
+        });
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDAO.createUser(user);
         return new Object[] {user, jwtUtils.generateToken(user.getEmail())};
@@ -94,7 +98,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void addBalance(BigDecimal amount) {
+    public User addBalance(BigDecimal amount) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userDAO.getUserByEmail(email)
                 .orElseThrow(() -> new IllegalStateException("User not found with account: " + email));
@@ -104,6 +108,7 @@ public class UserServiceImpl implements UserService {
         }
         user.setBalance(user.getBalance().add(amount));
         userDAO.updateUser(user);
+        return user;
     }
 }
 
